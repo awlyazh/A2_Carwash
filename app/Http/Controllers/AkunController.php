@@ -47,11 +47,12 @@ class AkunController extends Controller
     public function update(Request $request, $id)
 {
     // Mencari akun berdasarkan ID yang diberikan
-    $akun = Akun::findOrFail($id); 
+    $akun = Akun::where('id_akun', '=', $id)->firstOrFail(); // Ambil satu data atau gagal
 
+    // Validasi input
     $request->validate([
         'username' => 'required|max:50',
-        'email' => 'required|email|unique:akun,email,' . $akun->id_akun . '|max:100',
+        'email' => 'required|email|unique:akun,email,' . $id . ',id_akun', // Abaikan email milik akun ini
         'posisi' => 'required|in:admin,karyawan',
     ]);
 
@@ -62,8 +63,10 @@ class AkunController extends Controller
         'posisi' => $request->posisi,
     ]);
 
+    // Redirect ke halaman index dengan pesan sukses
     return redirect()->route('akun.index')->with('success', 'Akun berhasil diupdate.');
 }
+
 
 
     public function destroy($id)

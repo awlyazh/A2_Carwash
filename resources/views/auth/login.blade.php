@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f8ff; /* Warna latar belakang */
+            background-color: #f0f8ff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -26,13 +26,13 @@
         }
         h2 {
             text-align: center;
-            color: #333; /* Warna teks judul */
+            color: #333;
         }
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
-            color: #555; /* Warna teks label */
+            color: #555;
         }
         input {
             width: 100%;
@@ -40,24 +40,24 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            transition: border-color 0.3s; /* Transisi border */
+            transition: border-color 0.3s;
         }
         input:focus {
-            border-color: #007bff; /* Warna border saat fokus */
-            outline: none; /* Menghilangkan outline default */
+            border-color: #007bff;
+            outline: none;
         }
         button {
             width: 100%;
             padding: 10px;
-            background-color: #007bff; /* Warna biru */
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s; /* Transisi latar belakang */
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3; /* Warna biru lebih gelap saat hover */
+            background-color: #0056b3;
         }
         .form-footer {
             text-align: center;
@@ -68,28 +68,36 @@
             text-decoration: none;
         }
         .form-footer a:hover {
-            text-decoration: underline; /* Garis bawah saat hover */
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Login</h2>
-        <form action="{{ route('login') }}" method="post">
+
+        @if ($errors->has('loginError'))
+            <div style="color: red; margin-bottom: 15px;">
+                {{ $errors->first('loginError') }}
+            </div>
+        @endif
+
+        <form action="{{ url('verifikasi') }}" method="post">
             @csrf
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required value="{{ old('username') }}">
 
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required value="{{ old('email') }}">
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
             <button type="submit">Login</button>
         </form>
+
         <div class="form-footer">
-            <p><a href="#">Forgot Password?</a></p> <!-- Tautan untuk mengatur ulang password -->
+            <p><a href="#">Forgot Password?</a></p>
         </div>
     </div>
 </body>

@@ -32,4 +32,56 @@ class LoginController extends Controller
             'email' => 'Kredensial yang Anda berikan tidak cocok dengan data kami.',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        // Logout user
+        Auth::logout();
+
+        // Hapus session
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Redirect ke halaman login atau halaman lain
+        return redirect('/login')->with('success', 'Anda berhasil logout.');
+    }
+
+    public function verifikasi(Request $request)
+{
+    // Validasi input
+    $request->validate([
+        'username' => ['required'],
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    // Ambil semua data user dari tabel users
+    $users = \App\Models\Akun::all();
+
+    // Cek apakah ada user dengan username dan email yang cocok
+    foreach ($users as $user) {
+        if ($user->username === $request->input('username') && $user->email === $request->input('email')) {
+            // Jika username dan email cocok, cek apakah password cocok (tanpa hashing)
+            if ($user->password === $request->input('password')) {
+                // Jika password cocok, login manual
+                $request->session()->put('user_id', $user->id); // Simpan ID user di session
+                $request->session()->regenerate();
+
+                return redirect()->intended('dashboard'); // Arahkan setelah login berhasil
+            } else {
+                // Password salah
+                return back()->withErrors([
+                    'password' => 'Password yang Anda masukkan salah.',
+                ]);
+            }
+        }
+    }
+
+    // Jika tidak ditemukan user yang cocok
+    return back()->withErrors([
+        'email' => 'Kredensial yang Anda berikan tidak cocok dengan data kami.',
+    ]);
+}
+
+    
 }

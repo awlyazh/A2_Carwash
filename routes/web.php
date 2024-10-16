@@ -9,17 +9,19 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController; 
 use App\Http\Controllers\AkunController;
 
+// Route resource untuk transaksi (CRUD Transaksi)
+// Definisikan route untuk transaksi
+Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index'); // Menampilkan daftar transaksi
+Route::get('/transaksi/create', [TransaksiController::class, 'create'])->name('transaksi.create'); // Menampilkan form tambah transaksi
+Route::post('/transaksi/store', [TransaksiController::class, 'store'])->name('transaksi.store'); // Menyimpan transaksi
+Route::get('/transaksi/{transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit'); // Menampilkan form edit transaksi
+Route::put('/transaksi/{transaksi}', [TransaksiController::class, 'update'])->name('transaksi.update'); // Memperbarui transaksi
+Route::delete('/transaksi/{transaksi}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy'); // Menghapus transaksi
 
 // Route untuk halaman utama
 Route::get('/', function () {
     return view('welcome');
 });
-
-// Route resource untuk transaksi (CRUD Transaksi)
-// Ini sudah mencakup semua metode yang diperlukan, termasuk edit, update, dan destroy
-Route::get('/transaksi', [TransaksiController::class, 'index']);
-Route::get('/transaksi/create', [TransaksiController::class, 'create']);
-Route::post('/transaksi/store', [TransaksiController::class, 'store']);
 
 // Route resource untuk admin
 Route::resource('admin', AdminController::class);
@@ -59,3 +61,13 @@ Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update')
 
 // Rute untuk menghapus akun
 Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::post('/verifikasi', [LoginController::class, 'verifikasi'])->name('verifikasi');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+});

@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Akun extends Model
 {
     use HasFactory;
-    protected $table = 'akun'; // Nama tabel yang digunakan
-    protected $primaryKey = 'id_akun'; // Primary key, auto-increment
-    public $incrementing = true; // Pastikan auto-increment aktif
-    protected $keyType = 'int'; // Tipe data integer untuk ID
+
+    protected $table = 'akun';
+    protected $primaryKey = 'id_akun';
+
+    public $incrementing = true; // Menetapkan kolom id_akun sebagai auto-increment
 
     protected $fillable = [
-        'id_akun',
         'username',
         'password',
         'email',
@@ -24,6 +24,5 @@ class Akun extends Model
     protected $hidden = [
         'password',
     ];
-
     public $timestamps = true; // Mengaktifkan timestamps jika Anda ingin menggunakan created_at dan updated_at
 }
