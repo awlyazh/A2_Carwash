@@ -30,32 +30,40 @@ class TransaksiController extends Controller
     public function store(Request $request)
     {
 
-        
-Transaksi::create($request->all());
+        Transaksi::create($request->all());
         return redirect()->to('transaksi')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
     // Menampilkan form edit transaksi
     public function edit(Transaksi $transaksi)
     {
-        return view('transaksi.edit', compact('transaksi'));
+        // Ambil semua mobil, pelanggan, dan akun untuk mengisi dropdown pada form
+        $mobil = Mobil::all();
+        $pelanggan = Pelanggan::all();
+        $akun = Akun::all();
+
+        // Tampilkan view edit dengan data transaksi, mobil, pelanggan, dan akun
+        return view('transaksi.edit', compact('transaksi', 'mobil', 'pelanggan', 'akun'));
     }
 
-    // Memperbarui data transaksi yang sudah ada
     public function update(Request $request, Transaksi $transaksi)
     {
+        // Validasi input
         $request->validate([
-            'id_pelanggan' => 'required|integer',
             'no_plat_mobil' => 'required|string|regex:/^[A-Z0-9\s]+$/',
+            'tanggal_transaksi' => 'required|date',
             'metode_pembayaran' => 'required|string|max:50',
             'total_pembayaran' => 'required|numeric|min:0',
             'status' => 'required|string|max:50',
         ]);
 
+        // Update transaksi dengan data yang diinputkan
         $transaksi->update($request->all());
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
+        // Redirect ke halaman transaksi.index
+        return redirect()->to('transaksi')->with('success', 'Transaksi berhasil diperbarui.');
     }
+
 
     // Menghapus transaksi
     public function destroy(Transaksi $transaksi)
