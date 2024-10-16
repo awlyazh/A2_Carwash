@@ -20,4 +20,10 @@ class Akun extends Model
         'email',
         'posisi',
     ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    public $timestamps = true; // Mengaktifkan timestamps jika Anda ingin menggunakan created_at dan updated_at
 }
