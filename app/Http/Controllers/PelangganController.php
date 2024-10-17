@@ -39,4 +39,53 @@ class PelangganController extends Controller
 
         return redirect()->to('pelanggan');
     }
+     // Menampilkan form edit pelanggan
+     public function edit($id)
+     {
+        $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
+        ->select('pelanggan.*', 'mobil.no_plat_mobil', 'mobil.nama_mobil', 'mobil.jenis_mobil')
+        ->where('pelanggan.id_pelanggan', '=', $id)
+        ->firstOrFail();
+
+         return view('pelanggan.edit', compact('pelanggan'));
+     }
+      // Memperbarui data transaksi yang sudah ada
+    public function update(Request $request,$id)
+    {  
+        $request->validate([
+            'nama' => 'required',
+            'no_hp' => 'required',
+            'no_plat_mobil' => 'required|max:50',
+            'nama_mobil' => 'required',
+            'jenis_mobil' => 'required',
+        ]);
+
+        $tablePelanggan = [
+            'nama' => $request->nama,
+            'no_hp' => $request->no_hp,
+        ];
+
+        $tableMobil = [
+            'no_plat_mobil' => $request->no_plat_mobil,
+            'nama_mobil' => $request->nama_mobil,
+            'jenis_mobil' => $request->jenis_mobil,
+        ];
+
+        $pelanggan = Pelanggan::where('pelanggan.id_pelanggan', '=', $id);
+        $pelanggan->update($tablePelanggan);
+
+        $mobil = mobil::where('mobil.id_pelanggan', '=', $id);
+        $mobil->update($tableMobil);
+
+        return redirect()->to('pelanggan')->with('success', 'Transaksi berhasil diperbarui.');
+    }
+
+    // Menghapus transaksi
+    public function destroy($id)
+    {
+        $pelanggan = Pelanggan::where('pelanggan.id_pelanggan', '=', $id);
+        $pelanggan->delete();
+
+        return redirect()->to('pelanggan')->with('success', 'Pelanggan berhasil dihapus.');
+    }
 }

@@ -30,13 +30,17 @@
                     <td>{{ $item->nama_mobil }}</td>
                     <td>{{ $item->jenis_mobil }}</td>
                     <td>
-                        <a href="" class="btn btn-warning btn-sm">Edit</a>
-
-                        <form action="{{ url('pelanggan.destroy', $item->id_pelanggan) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus?')">Hapus</button>
-                        </form>
+                        <div class="d-flex flex-column">
+                            <!-- Tombol Edit -->
+                            <a href="{{ url('pelanggan/edit/'. $item->id_pelanggan) }}" class="btn btn-warning btn-sm mb-2" style="width: 100%;">Edit</a>
+                            
+                            <!-- Tombol Hapus -->
+                            <form action="{{ url('pelanggan/destroy', ['pengguna' => $item->id_pelanggan]) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;" onclick="return confirm('Apakah Anda yakin ingin menghapus data pelanggan ini?')">Hapus</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
