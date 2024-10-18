@@ -36,10 +36,12 @@ Route::post('/pelanggan/store', [PelangganController::class, 'store']);
 Route::get('/pelanggan/edit/{id}', [PelangganController::class, 'edit'])->name('pelanggan.edit');
 // Rute untuk memperbarui data pelanggan berdasarkan nomor plat mobil
 Route::put('/pelanggan/update/{no_plat}', [PelangganController::class, 'update'])->name('pelanggan.update');
+Route::get('/pelanggan/index', [PelangganController::class, 'index']);
 
 // Rute untuk menghapus pelanggan berdasarkan nomor plat mobil
 Route::delete('/pelanggan/destroy/{no_plat}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
 // Route untuk halaman login
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -47,6 +49,7 @@ Route::get('/login', function () {
 // Route untuk proses login
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Rute utama untuk halaman daftar akun
 Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');

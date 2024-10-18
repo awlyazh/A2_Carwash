@@ -26,38 +26,39 @@
                         <li class="sidebar-title">Main Menu</li>
 
                         <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
-                            <a href="{{url('dashboard')}} " class='sidebar-link'>
+                            <a href="{{ url('dashboard') }}" class='sidebar-link'>
                                 <i data-feather="home" width="20"></i>
                                 <span>Dashboard</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item {{ Request::is('pelanggan') ? 'active' : '' }}">
-                            <a href="{{url('pelanggan')}}" class='sidebar-link'>
-                                <i data-feather="users" width="20"></i> <!-- Ikon untuk Pelanggan -->
+                            <a href="{{ url('pelanggan') }}" class='sidebar-link'>
+                                <i data-feather="users" width="20"></i>
                                 <span>Pelanggan</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item mb-3 {{ Request::is('transaksi') ? 'active' : '' }}">
-                            <a href="{{url('transaksi')}}" class='sidebar-link'>
-                                <i data-feather="credit-card" width="20"></i> <!-- Ikon untuk Transaksi -->
+                            <a href="{{ url('transaksi') }}" class='sidebar-link'>
+                                <i data-feather="credit-card" width="20"></i>
                                 <span>Transaksi</span>
                             </a>
                         </li>
 
                         <li class="sidebar-title">Pengaturan</li>
 
-                        <li class="sidebar-item">
-                            <a href="#" class='sidebar-link'>
-                                <i data-feather="settings" width="20"></i> <!-- Ikon untuk Akun -->
+                        <!-- Tambahkan Link Akun -->
+                        <li class="sidebar-item {{ Request::is('akun') ? 'active' : '' }}">
+                            <a href="{{ route('akun.index') }}" class='sidebar-link'>
+                                <i data-feather="settings" width="20"></i>
                                 <span>Akun</span>
                             </a>
                         </li>
 
                         <li class="sidebar-item">
                             <a href="#" class='sidebar-link'>
-                                <i data-feather="log-out" width="20"></i> <!-- Ikon untuk Keluar -->
+                                <i data-feather="log-out" width="20"></i>
                                 <span>Keluar</span>
                             </a>
                         </li>
@@ -67,17 +68,20 @@
                 <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
             </div>
         </div>
+
         <div id="main">
             <nav class="navbar navbar-header navbar-expand navbar-light">
                 <a class="sidebar-toggler" href="#"><span class="navbar-toggler-icon"></span></a>
-                <button class="btn navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="btn navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav d-flex align-items-center navbar-light ml-auto">
                         <li class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+                            <a href="#" data-toggle="dropdown"
+                                class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                                 <div class="avatar mr-1">
                                     <img src="{{ asset('voler/dist/assets/images/avatar/avatar-s-1.png') }}" alt="">
                                 </div>
@@ -110,7 +114,6 @@
             </footer>
         </div>
     </div>
-
 
     <script src="{{ asset('voler/dist/assets/js/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>

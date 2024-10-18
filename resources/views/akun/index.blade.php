@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Akun List</h1>
+    <h1>Daftar Akun</h1>
     <a href="{{ route('akun.create') }}" class="btn btn-primary">Tambah Akun</a>
 
     @if (session('success'))
@@ -26,10 +26,12 @@
                     <td>{{ $item->posisi }}</td>
                     <td>
                         <a href="{{ route('akun.edit', $item->id_akun) }}" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('akun.destroy', $item->id_akun) }}" method="POST" style="display:inline;">
+
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $item->id_akun }})">Hapus</button>
+
+                        <form id="delete-form-{{ $item->id_akun }}" action="{{ route('akun.destroy', $item->id_akun) }}" method="POST" style="display:none;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Hapus</button>
                         </form>
                     </td>
                 </tr>
@@ -37,4 +39,25 @@
         </tbody>
     </table>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script type="text/javascript">
+    function confirmDelete(akunId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin ingin menghapus data akun ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + akunId).submit();
+            }
+        });
+    }
+</script>
+
 @endsection
