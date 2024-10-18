@@ -20,6 +20,9 @@ Route::get('/', function () {
 Route::get('/transaksi', [TransaksiController::class, 'index']);
 Route::get('/transaksi/create', [TransaksiController::class, 'create']);
 Route::post('/transaksi/store', [TransaksiController::class, 'store']);
+Route::get('/transaksi/{transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+Route::delete('/transaksi/{transaksi}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+
 
 // Route resource untuk admin
 Route::resource('admin', AdminController::class);
@@ -62,3 +65,5 @@ Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update')
 
 // Rute untuk menghapus akun
 Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+
+
