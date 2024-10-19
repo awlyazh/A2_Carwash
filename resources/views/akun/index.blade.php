@@ -1,63 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+
+<div class="d-flex justify-content-between mb-3">
     <h1>Daftar Akun</h1>
-    <a href="{{ route('akun.create') }}" class="btn btn-primary">Tambah Akun</a>
+    <a href="{{ route('akun.create') }}" class="btn btn-primary mb-3">Tambah Akun</a>
+</div>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<!-- Menampilkan pesan sukses jika ada -->
+@if (session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Posisi</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($akun as $item)
+<!-- Tabel Daftar Akun -->
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Posisi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($akun as $item)
                 <tr>
                     <td>{{ $item->username }}</td>
                     <td>{{ $item->email }}</td>
                     <td>{{ $item->posisi }}</td>
                     <td>
-                        <a href="{{ route('akun.edit', $item->id_akun) }}" class="btn btn-warning">Edit</a>
+                        <div class="d-flex flex-column">
+                            <!-- Tombol Edit -->
+                            <a href="{{ route('akun.edit', $item->id_akun) }}" class="btn btn-warning btn-sm mb-2" role="button">Edit</a>
 
-                        <button class="btn btn-danger" onclick="confirmDelete({{ $item->id_akun }})">Hapus</button>
-
-                        <form id="delete-form-{{ $item->id_akun }}" action="{{ route('akun.destroy', $item->id_akun) }}" method="POST" style="display:none;">
-                            @csrf
-                            @method('DELETE')
-                        </form>
+                            <!-- Tombol Hapus -->
+                            <form action="{{ route('akun.destroy', $item->id_akun) }}" method="POST" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus akun ini?')">Hapus</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script type="text/javascript">
-    function confirmDelete(akunId) {
-        Swal.fire({
-            title: 'Apakah Anda yakin ingin menghapus data akun ini?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'OK',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + akunId).submit();
-            }
-        });
-    }
-</script>
 
 @endsection

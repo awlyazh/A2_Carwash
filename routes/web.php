@@ -9,11 +9,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController; 
 use App\Http\Controllers\AkunController;
 
-
 // Route untuk halaman utama
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('is_admin');
 
 // Route resource untuk transaksi (CRUD Transaksi)
 // Ini sudah mencakup semua metode yang diperlukan, termasuk edit, update, dan destroy

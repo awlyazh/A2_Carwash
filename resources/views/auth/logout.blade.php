@@ -16,9 +16,9 @@
     </div>
 </div>
 
-<form action="{{ route('logout') }}" method="POST" class="d-inline">
+<form action="{{ route('logout') }}" method="POST" style="display: inline;" onsubmit="console.log('Logout button pressed');">
     @csrf
-    <button type="submit" class="btn btn-link text-danger">Logout</button>
+    <button type="submit" class="btn btn-link" style="color: inherit; text-decoration: none;">Keluar</button>
 </form>
 
 @endsection
