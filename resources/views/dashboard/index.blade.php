@@ -11,21 +11,33 @@
     <div class="card-body">
         <div class="row">
             <!-- Total Pelanggan -->
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body">
-                        <h4 class="card-title">Total Pelanggan</h4>
-                        <p class="card-text">{{ $totalPelanggan }}</p>
+            <div class="col-12 col-md-3">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3'>
+                                <h3 class='card-title'>Total Pelanggan</h3>
+                                <div class="card-right mt-2">
+                                    <p>{{ $totalPelanggan }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Pelanggan Baru Minggu Ini -->
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
-                    <div class="card-body">
-                        <h4 class="card-title">Pelanggan Baru (Minggu Ini)</h4>
-                        <p class="card-text">{{ $pelangganBaru }}</p>
+            <div class="col-12 col-md-4">
+                <div class="card card-statistic">
+                    <div class="card-body p-0">
+                        <div class="d-flex flex-column">
+                            <div class='px-3 py-3'>
+                                <h3 class='card-title'>Pelanggan Baru (Minggu ini)</h3>
+                                <div class="card-right mt-2">
+                                    <p>{{ $pelangganBaru }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

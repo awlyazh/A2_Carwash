@@ -12,7 +12,7 @@ class Transaksi extends Model
     protected $keyType = 'int'; // Tipe data integer untuk ID
 
     protected $fillable = [
-        'id_pelanggan',
+        'id_akun',
         'no_plat_mobil',
         'metode_pembayaran',
         'total_pembayaran',

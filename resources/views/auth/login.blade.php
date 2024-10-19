@@ -11,7 +11,7 @@
                             <h3>Login</h3>
                             <p>Masukkan username dan password Anda.</p>
                         </div>
-                        <form action="index.html">
+                        <form action="{{ url('/auth') }}" method="POST">
                             <div class="form-group position-relative has-icon-left">
                                 <label for="username">Username</label>
                                 <div class="position-relative">

@@ -13,7 +13,7 @@ class LoginController extends Controller
     {
         return view('auth.login');  // Arahkan ke view login
     }
-    
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -25,7 +25,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');  // Arahkan setelah login berhasil
+            return redirect('/dashboard'); // Arahkan setelah login berhasil
         }
 
         return back()->withErrors([
@@ -47,41 +47,39 @@ class LoginController extends Controller
     }
 
     public function verifikasi(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'username' => ['required'],
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
+    {
+        // Validasi input
+        $request->validate([
+            'username' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-    // Ambil semua data user dari tabel users
-    $users = \App\Models\Akun::all();
+        // Ambil semua data user dari tabel users
+        $users = \App\Models\Akun::all();
 
-    // Cek apakah ada user dengan username dan email yang cocok
-    foreach ($users as $user) {
-        if ($user->username === $request->input('username') && $user->email === $request->input('email')) {
-            // Jika username dan email cocok, cek apakah password cocok (tanpa hashing)
-            if ($user->password === $request->input('password')) {
-                // Jika password cocok, login manual
-                $request->session()->put('user_id', $user->id); // Simpan ID user di session
-                $request->session()->regenerate();
+        // Cek apakah ada user dengan username dan email yang cocok
+        foreach ($users as $user) {
+            if ($user->username === $request->input('username') && $user->email === $request->input('email')) {
+                // Jika username dan email cocok, cek apakah password cocok (tanpa hashing)
+                if ($user->password === $request->input('password')) {
+                    // Jika password cocok, login manual
+                    $request->session()->put('user_id', $user->id); // Simpan ID user di session
+                    $request->session()->regenerate();
 
-                return redirect()->intended('dashboard'); // Arahkan setelah login berhasil
-            } else {
-                // Password salah
-                return back()->withErrors([
-                    'password' => 'Password yang Anda masukkan salah.',
-                ]);
+                    return redirect()->intended('dashboard'); // Arahkan setelah login berhasil
+                } else {
+                    // Password salah
+                    return back()->withErrors([
+                        'password' => 'Password yang Anda masukkan salah.',
+                    ]);
+                }
             }
         }
+
+        // Jika tidak ditemukan user yang cocok
+        return back()->withErrors([
+            'email' => 'Kredensial yang Anda berikan tidak cocok dengan data kami.',
+        ]);
     }
-
-    // Jika tidak ditemukan user yang cocok
-    return back()->withErrors([
-        'email' => 'Kredensial yang Anda berikan tidak cocok dengan data kami.',
-    ]);
-}
-
-    
 }
