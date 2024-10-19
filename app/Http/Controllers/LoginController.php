@@ -33,6 +33,11 @@ class LoginController extends Controller
         ]);
     }
 
+    protected function authenticated(Request $request, $user)
+    {
+        return redirect()->intended('/dashboard');
+    }
+
     public function logout(Request $request)
     {
         // Logout user
@@ -43,7 +48,7 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         // Redirect ke halaman login atau halaman lain
-        return redirect('/login')->with('success', 'Anda berhasil logout.');
+        return redirect('/login');
     }
 
     public function verifikasi(Request $request)
