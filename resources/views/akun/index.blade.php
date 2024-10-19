@@ -35,13 +35,13 @@
                     <td>
                         <div class="d-flex flex-column">
                             <!-- Tombol Edit -->
-                            <a href="{{ route('akun.edit', $item->id_akun) }}" class="btn btn-warning btn-sm mb-2" role="button">Edit</a>
+                            <a href="{{ route('akun.edit', $item->id_akun) }}" class="btn btn-warning btn-sm w-50 mb-2" role="button">Edit</a>
 
                             <!-- Tombol Hapus -->
-                            <form action="{{ route('akun.destroy', $item->id_akun) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('akun.destroy', $item->id_akun) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus akun ini?')">Hapus</button>
+                                <button type="submit" class="btn btn-danger btn-sm w-50" onclick="return confirm('Apakah Anda yakin ingin menghapus akun ini?')">Hapus</button>
                             </form>
                         </div>
                     </td>

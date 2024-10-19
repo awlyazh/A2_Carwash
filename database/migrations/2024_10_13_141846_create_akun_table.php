@@ -10,7 +10,7 @@ class CreateAkunTable extends Migration
     {
         Schema::create('akun', function (Blueprint $table) {
             $table->id('id_akun'); // Auto Increment Primary Key
-            $table->string('username', 50); // Username dengan max length 50
+            $table->string('username', 50)->unique(); // Username dengan max length 50
             $table->string('password', 255); // Password yang dienkripsi, panjang max 255
             $table->string('email', 100)->unique(); // Email yang unik dengan panjang max 100
             $table->enum('posisi', ['admin', 'karyawan']); // Posisi (role) bisa admin atau karyawan

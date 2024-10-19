@@ -17,6 +17,7 @@
                     @foreach ($mobil as $m)
                     <option value="{{ $m->no_plat_mobil }}">{{ $m->no_plat_mobil }}</option>
                     @endforeach
+
                 </select>
             </div>
 

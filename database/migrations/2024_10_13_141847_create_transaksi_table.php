@@ -6,30 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTransaksiTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('transaksi', function (Blueprint $table) {
-            $table->id('id_transaksi'); // Auto-increment ID
-            $table->unsignedBigInteger('id_pelanggan'); // Foreign key if needed
-            $table->string('no_plat_mobil');
-            $table->string('metode_pembayaran', 50);
-            $table->decimal('total_pembayaran', 10, 2);
+            $table->id('id_transaksi');
             $table->date('tanggal_transaksi');
-            $table->string('status', 50);
-            $table->timestamps(); // Menyimpan created_at dan updated_at secara otomatis
+            $table->enum('metode_pembayaran', ['cash', 'transfer bank', 'qris']); // Enum untuk metode pembayaran
+            $table->double('total_pembayaran');
+            $table->enum('status', ['selesai', 'dibatalkan']); // Enum untuk status transaksi
+            $table->string('no_plat_mobil'); // Foreign Key ke tabel mobil
+            $table->foreign('no_plat_mobil')->references('no_plat_mobil')->on('mobil')->onDelete('cascade');
+
+            // Perbaikan di sini
+            $table->unsignedBigInteger('id_akun'); // Pastikan tipe yang benar
+            $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade'); // Sesuaikan foreign key
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('transaksi');
