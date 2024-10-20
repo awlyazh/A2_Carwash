@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -8,7 +8,6 @@ use App\Models\Pelanggan;
 use App\Models\Mobil;
 use App\Models\Akun;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
 
 class TransaksiController extends Controller
 {

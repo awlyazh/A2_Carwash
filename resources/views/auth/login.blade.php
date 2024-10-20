@@ -36,16 +36,13 @@
                                 </div>
                             </div>
 
-                            <div class='form-check clearfix my-4'>
+                            <!-- <div class='form-check clearfix my-4'>
                                 <div class="checkbox float-left">
                                     <input type="checkbox" id="checkbox1" class='form-check-input'>
                                     <label for="checkbox1">Remember me</label>
                                 </div>
-                                <div class="float-right">
-                                    <a href="auth-register.html">Don't have an account?</a>
-                                </div>
-                            </div>
-                            <div class="clearfix">
+                            </div> -->
+                            <div class="clearfix mt-4">
                                 <button class="btn btn-primary float-right">Login</button>
                             </div>
                         </form>

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
 use App\Models\Mobil;
-use App\Http\Controllers\Controller;
 
 class PelangganController extends Controller
 {

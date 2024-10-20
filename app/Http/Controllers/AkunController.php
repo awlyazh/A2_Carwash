@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Akun;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
 
 class AkunController extends Controller
 {
@@ -46,27 +45,27 @@ class AkunController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    // Mencari akun berdasarkan ID yang diberikan
-    $akun = Akun::where('id_akun', '=', $id)->firstOrFail(); // Ambil satu data atau gagal
+    {
+        // Mencari akun berdasarkan ID yang diberikan
+        $akun = Akun::where('id_akun', '=', $id)->firstOrFail(); // Ambil satu data atau gagal
 
-    // Validasi input
-    $request->validate([
-        'username' => 'required|max:50',
-        'email' => 'required|email|unique:akun,email,' . $id . ',id_akun', // Abaikan email milik akun ini
-        'posisi' => 'required|in:admin,karyawan',
-    ]);
+        // Validasi input
+        $request->validate([
+            'username' => 'required|max:50',
+            'email' => 'required|email|unique:akun,email,' . $id . ',id_akun', // Abaikan email milik akun ini
+            'posisi' => 'required|in:admin,karyawan',
+        ]);
 
-    // Update data akun
-    $akun->update([
-        'username' => $request->username,
-        'email' => $request->email,
-        'posisi' => $request->posisi,
-    ]);
+        // Update data akun
+        $akun->update([
+            'username' => $request->username,
+            'email' => $request->email,
+            'posisi' => $request->posisi,
+        ]);
 
-    // Redirect ke halaman index dengan pesan sukses
-    return redirect()->route('akun.index')->with('success', 'Akun berhasil diupdate.');
-}
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('akun.index')->with('success', 'Akun berhasil diupdate.');
+    }
 
 
 

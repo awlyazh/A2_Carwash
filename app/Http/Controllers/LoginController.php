@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Models\Akun;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {
@@ -42,7 +41,7 @@ class LoginController extends Controller
             if ($user->posisi === 'admin') {
                 return redirect()->intended('/dashboard');
             } elseif ($user->posisi === 'karyawan') {
-                return redirect()->intended('/karyawan-dashboard');
+                return redirect()->intended('/dashboard');
             }
         }
 

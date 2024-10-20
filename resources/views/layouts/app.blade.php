@@ -39,22 +39,32 @@
                             </a>
                         </li>
 
-                        <li class="sidebar-item mb-3 {{ Request::is('transaksi') ? 'active' : '' }}">
+                        <li class="sidebar-item {{ Request::is('transaksi') ? 'active' : '' }}">
                             <a href="{{ url('transaksi') }}" class='sidebar-link'>
                                 <i data-feather="credit-card" width="20"></i>
                                 <span>Transaksi</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-title">Pengaturan</li>
+                        @if (Auth::user()->posisi === 'admin') <!-- Only visible for admin -->
+                        <li class="sidebar-item {{ Request::is('laporan') ? 'active' : '' }}">
+                            <a href="{{ url('laporan') }}" class='sidebar-link'>
+                                <i data-feather="file-text" width="20"></i>
+                                <span>Laporan</span>
+                            </a>
+                        </li>
+                        @endif
 
-                        <!-- Tambahkan Link Akun -->
+                        <li class="sidebar-title mt-3">Pengaturan</li>
+
+                        @if (Auth::user()->posisi === 'admin') <!-- Only visible for admin -->
                         <li class="sidebar-item {{ Request::is('akun') ? 'active' : '' }}">
                             <a href="{{ route('akun.index') }}" class='sidebar-link'>
                                 <i data-feather="settings" width="20"></i>
                                 <span>Akun</span>
                             </a>
                         </li>
+                        @endif
 
                         <li class="sidebar-item">
                             <form action="{{ route('logout') }}" method="POST" style="display: none;" id="logout-form">
