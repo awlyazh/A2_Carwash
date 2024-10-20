@@ -28,6 +28,11 @@
     <script src="{{ asset('voler/dist/assets/js/main.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/js/vendors.js') }}"></script>
+
+    <script>
+        feather.replace(); // Menginisialisasi Feather Icons
+    </script>
+
 </body>
 
 </html>

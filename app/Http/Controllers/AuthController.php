@@ -18,50 +18,52 @@ class AuthController extends Controller
     // Proses login
     public function login(Request $request)
     {
-        // Validasi input hanya username/email dan password
+        // Validasi input login (bisa username atau email) dan password
         $credentials = $request->validate([
-            'username' => ['required_without:email', 'string'], // Username harus ada atau email
-            'email' => ['required_without:username', 'email'],  // Email harus ada jika username tidak ada
-            'password' => ['required', 'string'],               // Password wajib ada
+            'login' => ['required', 'string'],   // Input login bisa username atau email
+            'password' => ['required', 'string'], // Password wajib ada
         ]);
 
-        // Cek apakah login menggunakan username atau email
-        $loginField = filter_var($request->input('username') ?: $request->input('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        // Cek apakah input login adalah email atau username
+        $loginField = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         // Ambil user berdasarkan username atau email
-        $user = Akun::where($loginField, $request->input($loginField))->first();
+        $user = Akun::where($loginField, $request->input('login'))->first();
 
         // Cek apakah user ditemukan dan password sesuai
-        if ($user && Hash::check($request->input('password'), $user->password)) {
-            // Login menggunakan Auth
-            Auth::login($user);
-            $request->session()->regenerate();
+        if ($user) {
+            if (Hash::check($request->input('password'), $user->password)) {
+                // Login menggunakan Auth
+                Auth::login($user);
+                $request->session()->regenerate();
 
-            // Periksa role (posisi) dan arahkan sesuai role
-            if ($user->posisi === 'admin') {
-                return redirect()->intended('/dashboard');
-            } elseif ($user->posisi === 'karyawan') {
-                return redirect()->intended('/dashboard');
+                // Periksa role (posisi) dan arahkan sesuai role
+                if ($user->posisi === 'admin') {
+                    return redirect()->intended('/dashboard');
+                } elseif ($user->posisi === 'karyawan') {
+                    return redirect()->intended('/dashboard');
+                }
+            } else {
+                // Jika password salah
+                return back()->withErrors([
+                    'password' => 'Password yang dimasukkan salah.',
+                ])->withInput();
             }
+        } else {
+            // Jika username/email tidak ditemukan
+            return back()->withErrors([
+                'login' => ucfirst($loginField) . ' tidak ditemukan.',
+            ])->withInput();
         }
-
-        // Jika login gagal
-        return back()->withErrors([
-            'login' => 'Username atau password salah.',
-        ]);
     }
 
     // Fungsi logout
     public function logout(Request $request)
     {
-        // Proses logout user
         Auth::logout();
-
-        // Invalidate session dan regenerate token untuk keamanan
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Redirect ke halaman login
         return redirect('/login');
     }
 }
