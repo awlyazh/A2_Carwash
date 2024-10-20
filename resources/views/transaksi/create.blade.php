@@ -6,7 +6,7 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <form action="{{ url('transaksi/store') }}" method="POST">
+        <form action="{{ route('transaksi.store') }}" method="POST">
             @csrf
 
             {{-- Select No Plat Mobil --}}

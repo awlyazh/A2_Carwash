@@ -1,71 +1,62 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\TransaksiController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\PelangganController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LoginController; 
-use App\Http\Controllers\AkunController;
+use App\Http\Controllers\Auth\LoginController; // Perbarui namespace untuk LoginController
+use App\Http\Controllers\Admin\TransaksiController as AdminTransaksiController;
+use App\Http\Controllers\Admin\PelangganController as AdminPelangganController;
+use App\Http\Controllers\Admin\MobilController as AdminMobilController;
+use App\Http\Controllers\Admin\DashboardController; // Perbarui namespace untuk DashboardController
+use App\Http\Controllers\Admin\AkunController; // Perbarui namespace untuk AkunController
+// use App\Http\Controllers\Karyawan\TransaksiController as KaryawanTransaksiController;
+// use App\Http\Controllers\Karyawan\PelangganController as KaryawanPelangganController;
+// use App\Http\Controllers\Karyawan\MobilController as KaryawanMobilController;
 
 // Route untuk halaman utama
 Route::get('/', function () {
-    return view('welcome');
-})->middleware('is_admin');
-
-// Route resource untuk transaksi (CRUD Transaksi)
-// Ini sudah mencakup semua metode yang diperlukan, termasuk edit, update, dan destroy
-Route::get('/transaksi', [TransaksiController::class, 'index']);
-Route::get('/transaksi/create', [TransaksiController::class, 'create']);
-Route::post('/transaksi/store', [TransaksiController::class, 'store']);
-Route::get('/transaksi/{transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
-Route::delete('/transaksi/{transaksi}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
-
-
-// Route resource untuk admin
-Route::resource('admin', AdminController::class);
-
-Route::resource('dashboard', DashboardController::class);
-// Route untuk pelanggan
-Route::get('/pelanggan', [PelangganController::class, 'index']);
-Route::get('/pelanggan/create', [PelangganController::class, 'create']);
-Route::post('/pelanggan/store', [PelangganController::class, 'store']);
-// Rute untuk menampilkan form edit pelanggan berdasarkan nomor plat mobil
-Route::get('/pelanggan/edit/{id}', [PelangganController::class, 'edit'])->name('pelanggan.edit');
-// Rute untuk memperbarui data pelanggan berdasarkan nomor plat mobil
-Route::put('/pelanggan/update/{no_plat}', [PelangganController::class, 'update'])->name('pelanggan.update');
-Route::get('/pelanggan/index', [PelangganController::class, 'index']);
-
-// Rute untuk menghapus pelanggan berdasarkan nomor plat mobil
-Route::delete('/pelanggan/destroy/{no_plat}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
-// Route untuk halaman login
-
-Route::get('/login', function () {
     return view('auth.login');
-})->name('login');
+})->name('home');
+
+// Route untuk halaman login
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 
 // Route untuk proses login
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/auth', [LoginController::class, 'login']);
+Route::post('/login', [LoginController::class, 'login'])->name('login.process');
+
+// Route untuk logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Rute utama untuk halaman daftar akun
-Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
+// Route untuk dashboard (akses admin dan karyawan)
+Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+    // Rute lainnya...
+});
 
-// Rute untuk menampilkan form tambah akun
-Route::get('/akun/create', [AkunController::class, 'create'])->name('akun.create');
+// Route untuk transaksi (akses hanya admin)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/transaksi', [AdminTransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/create', [AdminTransaksiController::class, 'create'])->name('transaksi.create');
+    Route::post('/transaksi', [AdminTransaksiController::class, 'store'])->name('transaksi.store');
+    Route::get('/transaksi/{transaksi}/edit', [AdminTransaksiController::class, 'edit'])->name('transaksi.edit');
+    Route::put('/transaksi/{transaksi}', [AdminTransaksiController::class, 'update'])->name('transaksi.update');
+    Route::delete('/transaksi/{transaksi}', [AdminTransaksiController::class, 'destroy'])->name('transaksi.destroy');
+});
 
-// Rute untuk menyimpan akun baru
-Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
+// Route untuk pelanggan (akses admin dan karyawan)
+Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
+    Route::get('/pelanggan', [AdminPelangganController::class, 'index'])->name('pelanggan.index');
+    Route::get('/pelanggan/create', [AdminPelangganController::class, 'create'])->name('pelanggan.create');
+    Route::post('/pelanggan/store', [AdminPelangganController::class, 'store'])->name('pelanggan.store');
+    Route::get('/pelanggan/edit/{id}', [AdminPelangganController::class, 'edit'])->name('pelanggan.edit');
+    Route::put('/pelanggan/update/{no_plat}', [AdminPelangganController::class, 'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/destroy/{no_plat}', [AdminPelangganController::class, 'destroy'])->name('pelanggan.destroy');
+});
 
-// Rute untuk menampilkan form edit akun
-Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
-
-// Rute untuk memperbarui akun
-Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
-
-// Rute untuk menghapus akun
-Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
-
-
+// Route untuk akun (akses hanya admin)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/akun', [AkunController::class, 'index'])->name('akun.index');
+    Route::get('/akun/create', [AkunController::class, 'create'])->name('akun.create');
+    Route::post('/akun', [AkunController::class, 'store'])->name('akun.store');
+    Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
+    Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
+    Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+});

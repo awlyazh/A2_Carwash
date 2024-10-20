@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable; // Ganti dengan Authenticatable
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Akun extends Model
+class Akun extends Authenticatable
 {
     use HasFactory;
 
@@ -24,5 +24,6 @@ class Akun extends Model
     protected $hidden = [
         'password',
     ];
+
     public $timestamps = true; // Mengaktifkan timestamps jika Anda ingin menggunakan created_at dan updated_at
 }

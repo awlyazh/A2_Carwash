@@ -57,11 +57,15 @@
                         </li>
 
                         <li class="sidebar-item">
-                            <a href="#" class='sidebar-link'>
+                            <form action="{{ route('logout') }}" method="POST" style="display: none;" id="logout-form">
+                                @csrf
+                            </form>
+                            <a href="#" class='sidebar-link' onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i data-feather="log-out" width="20"></i>
                                 <span>Keluar</span>
                             </a>
                         </li>
+
 
                     </ul>
                 </div>
