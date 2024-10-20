@@ -11,6 +11,18 @@
                             <h3>Login</h3>
                             <p>Masukkan username dan password Anda.</p>
                         </div>
+
+                        <!-- Display any errors if present -->
+                        @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
                         <form action="{{ route('login') }}" method="POST">
                             @csrf <!-- Token CSRF untuk keamanan -->
 
@@ -22,6 +34,9 @@
                                         <i data-feather="user"></i>
                                     </div>
                                 </div>
+                                @error('username')
+                                <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
 
                             <div class="form-group position-relative has-icon-left">
@@ -34,14 +49,11 @@
                                         <i data-feather="lock"></i>
                                     </div>
                                 </div>
+                                @error('password')
+                                <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
 
-                            <!-- <div class='form-check clearfix my-4'>
-                                <div class="checkbox float-left">
-                                    <input type="checkbox" id="checkbox1" class='form-check-input'>
-                                    <label for="checkbox1">Remember me</label>
-                                </div>
-                            </div> -->
                             <div class="clearfix mt-4">
                                 <button class="btn btn-primary float-right">Login</button>
                             </div>

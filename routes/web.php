@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\DashboardController;
@@ -13,13 +13,13 @@ Route::get('/', function () {
 })->name('home');
 
 // Route untuk halaman login
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 
 // Route untuk proses login
-Route::post('/login', [LoginController::class, 'login'])->name('login.process');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 
 // Route untuk logout
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Route untuk dashboard (akses admin dan karyawan)
 Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
