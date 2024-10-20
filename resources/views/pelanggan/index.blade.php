@@ -1,14 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="page-title mb-3">
-    <h3>Pelanggan</h3>
+<div class="d-flex justify-content-between mb-3">
+    <h1>Daftar Pelanggan</h1>
+    <a href="{{ url( 'pelanggan/create') }}" class="btn btn-primary mb-3">Tambah</a>
 </div>
+
+<!-- Menampilkan pesan sukses jika ada -->
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
 <div class="card">
     <div class="card-body">
-        <a href="{{ url( 'pelanggan/create') }}" class="btn btn-primary mb-3">Tambah</a>
-
-        <table class="table table-striped">
+        <table class="table table-striped" id="table1">
             <thead>
                 <tr>
                     <th>No</th>
@@ -33,7 +40,7 @@
                         <div class="d-flex flex-column">
                             <!-- Tombol Edit -->
                             <a href="{{ url('pelanggan/edit/'. $item->id_pelanggan) }}" class="btn btn-warning btn-sm mb-2" style="width: 100%;">Edit</a>
-                            
+
                             <!-- Tombol Hapus -->
                             <form action="{{ url('pelanggan/destroy', ['pengguna' => $item->id_pelanggan]) }}" method="POST" style="display:inline;">
                                 @csrf

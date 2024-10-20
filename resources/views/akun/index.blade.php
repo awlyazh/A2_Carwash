@@ -4,7 +4,7 @@
 
 <div class="d-flex justify-content-between mb-3">
     <h1>Daftar Akun</h1>
-    <a href="{{ route('akun.create') }}" class="btn btn-primary mb-3">Tambah Akun</a>
+    <a href="{{ route('akun.create') }}" class="btn btn-primary mb-3">Tambah</a>
 </div>
 
 <!-- Menampilkan pesan sukses jika ada -->
@@ -17,7 +17,7 @@
 <!-- Tabel Daftar Akun -->
 <div class="card">
     <div class="card-body">
-        <table class="table table-striped">
+        <table class="table table-striped" id="table1">
             <thead>
                 <tr>
                     <th>Username</th>

@@ -56,6 +56,7 @@
 
             {{-- Submit Button --}}
             <button type="submit" class="btn btn-primary">Simpan</button>
+            <a href="{{ url('transaksi') }}" class="btn btn-secondary">Kembali</a>
         </form>
     </div>
 </div>

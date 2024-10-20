@@ -4,7 +4,7 @@
 
 <div class="d-flex justify-content-between mb-3">
     <h1>Daftar Transaksi</h1>
-    <a href="{{ url('transaksi/create') }}" class="btn btn-primary mb-3">Tambah Transaksi</a>
+    <a href="{{ url('transaksi/create') }}" class="btn btn-primary mb-3">Tambah</a>
 </div>
 
 <!-- Menampilkan pesan sukses jika ada -->
@@ -17,11 +17,11 @@
 <!-- Tabel Daftar Transaksi -->
 <div class="card">
     <div class="card-body">
-        <table class="table table-striped">
+        <table class="table table-striped" id="table1">
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>No Plat Mobil</th>
+                    <th>Plat Mobil</th>
                     <th>Metode Pembayaran</th>
                     <th>Total Pembayaran</th>
                     <th>Tanggal Transaksi</th>
