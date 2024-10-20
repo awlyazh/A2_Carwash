@@ -11,7 +11,11 @@
                             <h3>Login</h3>
                             <p>Masukkan username dan password Anda.</p>
                         </div>
+<<<<<<<<< Temporary merge branch 1
+                        <form action="{{ url('/auth') }}" method="POST">
+=========
                         <form action="dashboard">
+>>>>>>>>> Temporary merge branch 2
                             <div class="form-group position-relative has-icon-left">
                                 <label for="username">Username</label>
                                 <div class="position-relative">
