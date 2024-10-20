@@ -6,6 +6,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AkunController;
+use App\Http\Controllers\LaporanController;
 
 // Route untuk halaman utama
 Route::get('/', function () {
@@ -55,4 +56,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/akun/{id}/edit', [AkunController::class, 'edit'])->name('akun.edit');
     Route::put('/akun/{id}', [AkunController::class, 'update'])->name('akun.update');
     Route::delete('/akun/{id}', [AkunController::class, 'destroy'])->name('akun.destroy');
+});
+
+// Route untuk laporan (akses hanya admin)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/laporan', [LaporanController::class, 'index']);
+    Route::get('/laporan/cetak/{tanggal_awal}/{tanggal_akhir}', [LaporanController::class, 'cetak']);
 });
