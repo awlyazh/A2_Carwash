@@ -20,8 +20,18 @@ class AuthController extends Controller
     {
         // Validasi input login (bisa username atau email) dan password
         $credentials = $request->validate([
-            'login' => ['required', 'string'],   // Input login bisa username atau email
-            'password' => ['required', 'string'], // Password wajib ada
+            'login' => [
+                'required',
+                'string',
+                'min:5', // Panjang minimum untuk username/email
+                'max:50', // Panjang maksimum untuk username/email
+            ],
+            'password' => [
+                'required',
+                'string',
+                'min:8', // Panjang minimum password
+                'max:255', // Panjang maksimum password
+            ],
         ]);
 
         // Cek apakah input login adalah email atau username
@@ -56,6 +66,7 @@ class AuthController extends Controller
             ])->withInput();
         }
     }
+
 
     // Fungsi logout
     public function logout(Request $request)

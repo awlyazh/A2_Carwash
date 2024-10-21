@@ -32,11 +32,11 @@ class TransaksiController extends Controller
     {
         // Validasi dan simpan transaksi
         $request->validate([
-            'no_plat_mobil' => 'required',
+            'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
             'tanggal_transaksi' => 'required|date',
-            'metode_pembayaran' => 'required',
+            'metode_pembayaran' => 'required|in:cash,transfer bank,qris',
             'total_pembayaran' => 'required|numeric|min:0',
-            'status' => 'required',
+            'status' => 'required|in:selesai,dibatalkan',
         ]);
 
         // Simpan data transaksi

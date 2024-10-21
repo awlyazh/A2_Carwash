@@ -17,14 +17,19 @@
                     @foreach ($mobil as $m)
                     <option value="{{ $m->no_plat_mobil }}">{{ $m->no_plat_mobil }}</option>
                     @endforeach
-
                 </select>
+                @error('no_plat_mobil')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- Input Tanggal Transaksi --}}
             <div class="mb-3">
                 <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
                 <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" required>
+                @error('tanggal_transaksi')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- Select Metode Pembayaran --}}
@@ -36,12 +41,18 @@
                     <option value="transfer bank">Transfer Bank</option>
                     <option value="qris">QRIS</option>
                 </select>
+                @error('metode_pembayaran')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- Input Total Pembayaran --}}
             <div class="mb-3">
                 <label for="total_pembayaran" class="form-label">Total Pembayaran</label>
                 <input type="number" step="0.01" class="form-control" id="total_pembayaran" name="total_pembayaran" required min="0">
+                @error('total_pembayaran')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- Select Status --}}
@@ -52,6 +63,9 @@
                     <option value="selesai">Selesai</option>
                     <option value="dibatalkan">Dibatalkan</option>
                 </select>
+                @error('status')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             {{-- Submit Button --}}

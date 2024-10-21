@@ -21,12 +21,26 @@ class AkunController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'username' => 'required|max:50',
-            'password' => 'required|min:6',
-            'email' => 'required|email|unique:akun,email|max:100',
-            'posisi' => 'required|in:admin,karyawan',
-        ]);
+        $request->validate(
+            [
+                'username' => 'required|max:50',
+                'password' => 'required|min:6',
+                'email' => 'required|email|unique:akun,email|max:100',
+                'posisi' => 'required|in:admin,karyawan',
+            ],
+            [
+                'username.required' => 'Username harus diisi.',
+                'username.max' => 'Username tidak boleh lebih dari 50 karakter.',
+                'password.required' => 'Password harus diisi.',
+                'password.min' => 'Password minimal 6 karakter.',
+                'email.required' => 'Email harus diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
+                'email.max' => 'Email tidak boleh lebih dari 100 karakter.',
+                'posisi.required' => 'Posisi harus diisi.',
+                'posisi.in' => 'Posisi yang dipilih tidak valid.',
+            ]
+        );
 
         Akun::create([
             'username' => $request->username,
@@ -54,6 +68,14 @@ class AkunController extends Controller
             'username' => 'required|max:50',
             'email' => 'required|email|unique:akun,email,' . $id . ',id_akun', // Abaikan email milik akun ini
             'posisi' => 'required|in:admin,karyawan',
+        ], [
+            'username.required' => 'Username harus diisi.',
+            'username.max' => 'Username tidak boleh lebih dari 50 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'posisi.required' => 'Posisi harus diisi.',
+            'posisi.in' => 'Posisi yang dipilih tidak valid.',
         ]);
 
         // Update data akun

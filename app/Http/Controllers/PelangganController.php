@@ -17,11 +17,20 @@ class PelangganController extends Controller
 
     public function create()
     {
-        return view('pelanggan.create',);
+        return view('pelanggan.create');
     }
 
     public function store(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'no_hp' => 'required|digits_between:10,15|numeric',
+            'no_plat_mobil' => 'required|string|max:50',
+            'nama_mobil' => 'required|string|max:100',
+            'jenis_mobil' => 'required|string|max:100',
+        ]);
+
         // Simpan data ke database
         $pelanggan = new Pelanggan();
         $pelanggan->nama = $request->input('nama');
@@ -39,6 +48,7 @@ class PelangganController extends Controller
 
         return redirect()->to('pelanggan');
     }
+
     // Menampilkan form edit pelanggan
     public function edit($id)
     {
@@ -49,43 +59,47 @@ class PelangganController extends Controller
 
         return view('pelanggan.edit', compact('pelanggan'));
     }
-    // Memperbarui data transaksi yang sudah ada
+
+    // Memperbarui data pelanggan dan mobil yang sudah ada
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama' => 'required',
-            'no_hp' => 'required',
-            'no_plat_mobil' => 'required|max:50',
-            'nama_mobil' => 'required',
-            'jenis_mobil' => 'required',
+            'nama' => 'required|string|max:100',
+            'no_hp' => 'required|digits_between:10,15|numeric',
+            'no_plat_mobil' => 'required|string|max:50',
+            'nama_mobil' => 'required|string|max:100',
+            'jenis_mobil' => 'required|string|max:100',
         ]);
 
-        $tablePelanggan = [
+        // Update data pelanggan
+        $pelanggan = Pelanggan::where('id_pelanggan', '=', $id)->first();
+        $pelanggan->update([
             'nama' => $request->nama,
             'no_hp' => $request->no_hp,
-        ];
+        ]);
 
-        $tableMobil = [
+        // Update data mobil
+        $mobil = Mobil::where('id_pelanggan', '=', $id)->first();
+        $mobil->update([
             'no_plat_mobil' => $request->no_plat_mobil,
             'nama_mobil' => $request->nama_mobil,
             'jenis_mobil' => $request->jenis_mobil,
-        ];
+        ]);
 
-        $pelanggan = Pelanggan::where('pelanggan.id_pelanggan', '=', $id);
-        $pelanggan->update($tablePelanggan);
-
-        $mobil = mobil::where('mobil.id_pelanggan', '=', $id);
-        $mobil->update($tableMobil);
-
-        return redirect()->to('pelanggan')->with('success', 'Transaksi berhasil diperbarui.');
+        return redirect()->to('pelanggan')->with('success', 'Data pelanggan dan mobil berhasil diperbarui.');
     }
 
-    // Menghapus transaksi
+    // Menghapus pelanggan dan mobil
     public function destroy($id)
     {
-        $pelanggan = Pelanggan::where('pelanggan.id_pelanggan', '=', $id);
+        // Hapus pelanggan
+        $pelanggan = Pelanggan::where('id_pelanggan', '=', $id)->first();
         $pelanggan->delete();
 
-        return redirect()->to('pelanggan')->with('success', 'Pelanggan berhasil dihapus.');
+        // Hapus mobil terkait
+        $mobil = Mobil::where('id_pelanggan', '=', $id)->first();
+        $mobil->delete();
+
+        return redirect()->to('pelanggan')->with('success', 'Pelanggan dan mobil berhasil dihapus.');
     }
 }
