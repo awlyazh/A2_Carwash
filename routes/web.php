@@ -44,8 +44,8 @@ Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
     Route::get('/pelanggan/create', [PelangganController::class, 'create'])->name('pelanggan.create');
     Route::post('/pelanggan/store', [PelangganController::class, 'store'])->name('pelanggan.store');
     Route::get('/pelanggan/edit/{id}', [PelangganController::class, 'edit'])->name('pelanggan.edit');
-    Route::put('/pelanggan/update/{no_plat}', [PelangganController::class, 'update'])->name('pelanggan.update');
-    Route::delete('/pelanggan/destroy/{no_plat}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
+    Route::put('/pelanggan/update/{id}', [PelangganController::class, 'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/destroy/{id}', [PelangganController::class, 'destroy'])->name('pelanggan.destroy');
 });
 
 // Route untuk akun (akses hanya admin)

@@ -17,7 +17,7 @@ class Mobil extends Model
     protected $fillable = [
         'no_plat_mobil',
         'id_pelanggan',
-        'jenis mobil',
-        'nama mobil',
+        'jenis_mobil',
+        'nama_mobil',
     ];
 }
