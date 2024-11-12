@@ -99,7 +99,7 @@
                                 <div class="avatar mr-1">
                                     <img src="{{ asset('voler/dist/assets/images/avatar/avatar-s-1.png') }}" alt="">
                                 </div>
-                                <div class="d-none d-md-block d-lg-inline-block">Hi, Azah</div>
+                                <div class="d-none d-md-block d-lg-inline-block">Hi, aau</div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>

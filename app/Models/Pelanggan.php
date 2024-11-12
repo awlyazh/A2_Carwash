@@ -10,7 +10,7 @@ class Pelanggan extends Model
     use HasFactory;
 
     protected $table = 'pelanggan'; // Nama tabel yang digunakan
-    protected $primaryKey = 'id_pelanggan'; // Primary key, auto-increment
+    protected $primaryKey = 'id_pelanggan'; // Primary key
     public $incrementing = true; // Pastikan auto-increment aktif
     protected $keyType = 'int'; // Tipe data integer untuk ID
 
@@ -18,6 +18,11 @@ class Pelanggan extends Model
         'id_pelanggan',
         'no_hp',
         'nama',
-    
     ];
+
+    // Relasi ke model Mobil
+    public function mobil()
+    {
+        return $this->hasMany(Mobil::class, 'id_pelanggan', 'id_pelanggan');
+    }
 }

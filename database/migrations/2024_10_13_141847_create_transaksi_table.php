@@ -17,9 +17,14 @@ class CreateTransaksiTable extends Migration
             $table->string('no_plat_mobil'); // Foreign Key ke tabel mobil
             $table->foreign('no_plat_mobil')->references('no_plat_mobil')->on('mobil')->onDelete('cascade');
 
-            // Perbaikan di sini
-            $table->unsignedBigInteger('id_akun'); // Pastikan tipe yang benar
-            $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade'); // Sesuaikan foreign key
+            // Kolom foreign key untuk relasi dengan tabel akun
+            $table->unsignedBigInteger('id_akun');
+            $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade');
+            
+            // Kolom foreign key untuk relasi dengan tabel pelanggan
+            $table->unsignedBigInteger('id_pelanggan');
+            $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggan')->onDelete('cascade'); // Relasi ke tabel pelanggan
+            
             $table->timestamps();
         });
     }

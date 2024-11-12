@@ -20,4 +20,8 @@ class Mobil extends Model
         'jenis_mobil',
         'nama_mobil',
     ];
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan', 'id_pelanggan');
+    }
 }
