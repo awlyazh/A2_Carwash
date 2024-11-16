@@ -7,6 +7,10 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\MobilController;
+
+Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
+
 
 // Route untuk halaman utama
 Route::get('/', function () {

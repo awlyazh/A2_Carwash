@@ -43,7 +43,6 @@ class TransaksiController extends Controller
             'status' => 'required|string',
         ]);
 
-
         // Simpan data transaksi langsung menggunakan mass assignment
         Transaksi::create([
             'id_pelanggan' => $request->id_pelanggan,

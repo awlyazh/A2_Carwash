@@ -28,6 +28,7 @@ class CreateHargaTable extends Migration
      */
     public function down()
     {
+        // Menghapus tabel harga
         Schema::dropIfExists('harga');
     }
 }
