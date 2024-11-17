@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AkunController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
+use App\Http\Controllers\KaryawanController;
 
 Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
 
@@ -66,4 +67,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index']);
     Route::get('/laporan/cetak/{tanggal_awal}/{tanggal_akhir}', [LaporanController::class, 'cetak']);
+});
+
+// Route untuk karyawan (akses admin saja)
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan.index');
+    Route::get('/karyawan/create', [KaryawanController::class, 'create'])->name('karyawan.create');
+    Route::post('/karyawan', [KaryawanController::class, 'store'])->name('karyawan.store');
+    Route::get('/karyawan/{id_karyawan}/edit', [KaryawanController::class, 'edit'])->name('karyawan.edit');
+    Route::put('/karyawan/{id_karyawan}', [KaryawanController::class, 'update'])->name('karyawan.update');
+    Route::delete('/karyawan/{id_karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 });

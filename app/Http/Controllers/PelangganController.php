@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pelanggan;
 use App\Models\Mobil;
-use App\Models\MasterNamaMobils;
 use App\Models\Harga;
 
 class PelangganController extends Controller
@@ -22,9 +21,6 @@ class PelangganController extends Controller
 
     public function create()
     {
-        $masterNamaMobils = MasterNamaMobils::all();
-        $harga = Harga::all(); 
-
         return view('pelanggan.create', compact('masterNamaMobils', 'harga'));
     }
 
@@ -85,7 +81,6 @@ class PelangganController extends Controller
         $pelanggan = Pelanggan::findOrFail($id);
         $mobil = Mobil::where('id_pelanggan', $id)->first();
         $harga = Harga::all();
-        $masterNamaMobils = MasterNamaMobils::all();
 
         return view('pelanggan.edit', compact('pelanggan', 'mobil', 'harga', 'masterNamaMobils'));
     }

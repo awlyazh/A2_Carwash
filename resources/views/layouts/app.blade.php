@@ -58,9 +58,21 @@
                         <li class="sidebar-title mt-3">Pengaturan</li>
 
                         @if (Auth::user()->posisi === 'admin') <!-- Only visible for admin -->
+                        <li class="sidebar-item {{ Request::is('karyawan') ? 'active' : '' }}">
+                            <a href="{{ url('karyawan') }}" class='sidebar-link'>
+                                <i data-feather="briefcase" width="20"></i> <!-- Icon untuk Karyawan -->
+                                <span>Karyawan</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item {{ Request::is('harga') ? 'active' : '' }}">
+                            <a href="{{ url('harga') }}" class='sidebar-link'>
+                                <i data-feather="tag" width="20"></i> <!-- Icon untuk Harga -->
+                                <span>Harga</span>
+                            </a>
+                        </li>
                         <li class="sidebar-item {{ Request::is('akun') ? 'active' : '' }}">
                             <a href="{{ route('akun.index') }}" class='sidebar-link'>
-                                <i data-feather="settings" width="20"></i>
+                                <i data-feather="user" width="20"></i> <!-- Icon untuk Akun -->
                                 <span>Akun</span>
                             </a>
                         </li>
@@ -75,7 +87,6 @@
                                 <span>Keluar</span>
                             </a>
                         </li>
-
 
                     </ul>
                 </div>
@@ -99,7 +110,7 @@
                                 <div class="avatar mr-1">
                                     <img src="{{ asset('voler/dist/assets/images/avatar/avatar-s-1.png') }}" alt="">
                                 </div>
-                                <div class="d-none d-md-block d-lg-inline-block">Hi, aau</div>
+                                <div class="d-none d-md-block d-lg-inline-block">Hi, {{ Auth::user()->name }}</div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
@@ -132,14 +143,16 @@
     <script src="{{ asset('voler/dist/assets/js/feather-icons/feather.min.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/js/app.js') }}"></script>
-
     <script src="{{ asset('voler/dist/assets/vendors/chartjs/Chart.min.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/vendors/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/js/pages/dashboard.js') }}"></script>
-
     <script src="{{ asset('voler/dist/assets/js/main.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('voler/dist/assets/js/vendors.js') }}"></script>
+
+    <script>
+        feather.replace(); // Pastikan ikon Feather ter-render
+    </script>
 </body>
 
 </html>

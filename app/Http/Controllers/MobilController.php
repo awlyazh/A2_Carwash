@@ -4,16 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Mobil;
-use App\Models\MasterNamaMobils;
 
 class MobilController extends Controller
 {
     public function create()
 {
-    $masterNamaMobils = MasterNamaMobils::all(); 
-    return view('mobil.create', compact('masterNamaMobils'));
-    
-    return view('pelanggan.create', compact('mobil'));
+    return view('mobil.create', compact('Mobil'));
 }
 
     public function store(Request $request)

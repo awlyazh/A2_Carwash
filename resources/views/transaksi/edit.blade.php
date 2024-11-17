@@ -16,17 +16,38 @@
                 <select class="form-control @error('no_plat_mobil') is-invalid @enderror" id="no_plat_mobil" name="no_plat_mobil" required>
                     <option value="">Pilih Plat Mobil</option>
                     @foreach ($pelanggan as $p)
-                    @foreach ($p->mobil as $m)
-                    <option value="{{ $m->no_plat_mobil }}" data-pelanggan-id="{{ $p->id_pelanggan }}" data-nohp="{{ $p->no_hp }}"
-                        {{ $m->no_plat_mobil == $transaksi->no_plat_mobil ? 'selected' : '' }}>
-                        {{ $m->no_plat_mobil }} - {{ $p->nama }}
-                    </option>
-                    @endforeach
+                        @foreach ($p->mobil as $m)
+                            <option value="{{ $m->no_plat_mobil }}" 
+                                    data-nama-mobil="{{ $m->nama_mobil }}" 
+                                    data-jenis-mobil="{{ $m->jenis_mobil }}" 
+                                    data-harga="{{ $m->harga->harga }}"
+                                    {{ $m->no_plat_mobil == $transaksi->no_plat_mobil ? 'selected' : '' }}>
+                                {{ $m->no_plat_mobil }} - {{ $p->nama }}
+                            </option>
+                        @endforeach
                     @endforeach
                 </select>
                 @error('no_plat_mobil')
-                <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+
+            {{-- Tampilkan Nama Mobil --}}
+            <div class="mb-3">
+                <label for="nama_mobil" class="form-label">Nama Mobil</label>
+                <input type="text" class="form-control" id="nama_mobil" name="nama_mobil" value="{{ $transaksi->mobil->nama_mobil ?? '' }}" readonly>
+            </div>
+
+            {{-- Tampilkan Jenis Mobil --}}
+            <div class="mb-3">
+                <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
+                <input type="text" class="form-control" id="jenis_mobil" name="jenis_mobil" value="{{ $transaksi->mobil->jenis_mobil ?? '' }}" readonly>
+            </div>
+
+            {{-- Tampilkan Harga Mobil --}}
+            <div class="mb-3">
+                <label for="harga_mobil" class="form-label">Harga</label>
+                <input type="number" class="form-control" id="harga_mobil" name="harga_mobil" value="{{ $transaksi->harga ?? '' }}" readonly>
             </div>
 
             {{-- Input Tanggal Transaksi --}}
@@ -34,7 +55,34 @@
                 <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
                 <input type="date" class="form-control @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ $transaksi->tanggal_transaksi }}" required>
                 @error('tanggal_transaksi')
-                <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Input Nama Karyawan --}}
+            <div class="mb-3">
+                <label for="nama_karyawan" class="form-label">Nama Karyawan</label>
+                <input type="text" class="form-control @error('nama_karyawan') is-invalid @enderror" id="nama_karyawan" name="nama_karyawan" value="{{ $transaksi->karyawan->nama_karyawan ?? '' }}" required>
+                @error('nama_karyawan')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Jumlah Mobil Dicuci --}}
+            <div class="mb-3">
+                <label for="jumlah_mobil_dicuci" class="form-label">Jumlah Mobil yang Dicuci</label>
+                <input type="number" class="form-control @error('jumlah_mobil_dicuci') is-invalid @enderror" id="jumlah_mobil_dicuci" name="jumlah_mobil_dicuci" value="{{ $transaksi->jumlah_mobil_dicuci ?? 1 }}" readonly>
+                @error('jumlah_mobil_dicuci')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- Jumlah Uang yang Dihasilkan --}}
+            <div class="mb-3">
+                <label for="jumlah_uang_dihasilkan" class="form-label">Jumlah Uang yang Dihasilkan</label>
+                <input type="number" class="form-control @error('jumlah_uang_dihasilkan') is-invalid @enderror" id="jumlah_uang_dihasilkan" name="jumlah_uang_dihasilkan" value="{{ $transaksi->jumlah_uang_dihasilkan ?? '' }}" readonly>
+                @error('jumlah_uang_dihasilkan')
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -48,29 +96,16 @@
                     <option value="qris" {{ $transaksi->metode_pembayaran == 'qris' ? 'selected' : '' }}>QRIS</option>
                 </select>
                 @error('metode_pembayaran')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Select Jenis Mobil --}}
-            <div class="mb-3">
-                <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
-                <select class="form-control @error('jenis_mobil') is-invalid @enderror" id="jenis_mobil" name="jenis_mobil" required>
-                    <option value="">Pilih Jenis Mobil</option>
-                    <option value="kecil" data-harga="50000" {{ $transaksi->jenis_mobil == 'kecil' ? 'selected' : '' }}>Mobil Kecil - Rp 50,000</option>
-                    <option value="besar" data-harga="60000" {{ $transaksi->jenis_mobil == 'besar' ? 'selected' : '' }}>Mobil Besar - Rp 60,000</option>
-                </select>
-                @error('jenis_mobil')
-                <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
             {{-- Input Total Pembayaran --}}
             <div class="mb-3">
                 <label for="total_pembayaran" class="form-label">Total Pembayaran</label>
-                <input type="number" step="0.01" class="form-control @error('total_pembayaran') is-invalid @enderror" id="total_pembayaran" name="total_pembayaran" value="{{ $transaksi->total_pembayaran }}" required readonly>
+                <input type="number" step="0.01" class="form-control @error('total_pembayaran') is-invalid @enderror" id="total_pembayaran" name="total_pembayaran" value="{{ $transaksi->total_pembayaran }}" readonly>
                 @error('total_pembayaran')
-                <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -83,7 +118,7 @@
                     <option value="dibatalkan" {{ $transaksi->status == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                 </select>
                 @error('status')
-                <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
@@ -97,32 +132,25 @@
     </div>
 </div>
 
-{{-- JavaScript --}}
+{{-- JavaScript Dinamis --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const jenisMobilSelect = document.getElementById('jenis_mobil');
-        const totalPembayaranInput = document.getElementById('total_pembayaran');
         const noPlatMobilSelect = document.getElementById('no_plat_mobil');
+        const namaMobilInput = document.getElementById('nama_mobil');
+        const jenisMobilInput = document.getElementById('jenis_mobil');
+        const hargaMobilInput = document.getElementById('harga_mobil');
+        const jumlahUangDihasilkanInput = document.getElementById('jumlah_uang_dihasilkan');
+        const totalPembayaranInput = document.getElementById('total_pembayaran');
 
-        // Update total pembayaran ketika jenis mobil dipilih
-        jenisMobilSelect.addEventListener('change', function() {
-            const selectedOption = jenisMobilSelect.options[jenisMobilSelect.selectedIndex];
-            const harga = selectedOption.getAttribute('data-harga');
-            totalPembayaranInput.value = harga ? harga : '';
-        });
-
-        // Set harga berdasarkan nilai yang sudah ada
-        const selectedJenisMobil = jenisMobilSelect.options[jenisMobilSelect.selectedIndex];
-        const initialHarga = selectedJenisMobil.getAttribute('data-harga');
-        totalPembayaranInput.value = initialHarga ? initialHarga : '';
-
-        // Update id_pelanggan ketika plat mobil dipilih
+        // Update nama, jenis mobil, dan harga otomatis
         noPlatMobilSelect.addEventListener('change', function() {
-            const selectedOption = noPlatMobilSelect.options[noPlatMobilSelect.selectedIndex];
-            const pelangganId = selectedOption.getAttribute('data-pelanggan-id');
-
-            // Set ID pelanggan otomatis berdasarkan plat mobil
-            document.getElementById('id_pelanggan').value = pelangganId;
+            const selectedOption = this.options[this.selectedIndex];
+            namaMobilInput.value = selectedOption.getAttribute('data-nama-mobil');
+            jenisMobilInput.value = selectedOption.getAttribute('data-jenis-mobil');
+            const harga = selectedOption.getAttribute('data-harga');
+            hargaMobilInput.value = harga;
+            jumlahUangDihasilkanInput.value = harga;
+            totalPembayaranInput.value = harga;
         });
     });
 </script>

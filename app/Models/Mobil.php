@@ -25,10 +25,6 @@ class Mobil extends Model
     {
     return $this->belongsTo(Harga::class, 'id_harga', 'id_harga');
     }
-    public function masterNamaMobils()
-    {
-        return $this->belongsTo(MasterNamaMobils::class, 'nama_mobil', 'nama_mobil');
-    }
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan', 'id_pelanggan');

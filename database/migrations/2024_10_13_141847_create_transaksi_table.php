@@ -14,17 +14,21 @@ class CreateTransaksiTable extends Migration
             $table->enum('metode_pembayaran', ['cash', 'transfer bank', 'qris']); // Enum untuk metode pembayaran
             $table->double('total_pembayaran');
             $table->enum('status', ['selesai', 'dibatalkan']); // Enum untuk status transaksi
-            $table->string('no_plat_mobil'); // Foreign Key ke tabel mobil
+            $table->string('no_plat_mobil', 20); // Foreign Key ke tabel mobil
             $table->foreign('no_plat_mobil')->references('no_plat_mobil')->on('mobil')->onDelete('cascade');
 
             // Kolom foreign key untuk relasi dengan tabel akun
             $table->unsignedBigInteger('id_akun');
             $table->foreign('id_akun')->references('id_akun')->on('akun')->onDelete('cascade');
-            
+
             // Kolom foreign key untuk relasi dengan tabel pelanggan
             $table->unsignedBigInteger('id_pelanggan');
             $table->foreign('id_pelanggan')->references('id_pelanggan')->on('pelanggan')->onDelete('cascade'); // Relasi ke tabel pelanggan
-            
+
+            // Kolom foreign key untuk relasi dengan tabel akun
+            $table->unsignedBigInteger('id_karyawan');
+            $table->foreign('id_karyawan')->references('id_karyawan')->on('karyawan')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

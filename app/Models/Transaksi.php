@@ -12,13 +12,16 @@ class Transaksi extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id_akun',
         'id_pelanggan',
         'no_plat_mobil',
+        'tanggal_transaksi',
         'metode_pembayaran',
         'total_pembayaran',
-        'tanggal_transaksi',
         'status',
+        'id_akun',
+        'id_karyawan',
+        'jumlah_mobil_dicuci',
+        'jumlah_uang_dihasilkan',
     ];
 
     // Relasi dengan pelanggan
@@ -31,5 +34,11 @@ class Transaksi extends Model
     public function mobil()
     {
         return $this->belongsTo(Mobil::class, 'no_plat_mobil', 'no_plat_mobil');
+    }
+
+    // Relasi dengan karyawan
+    public function karyawan()
+    {
+        return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
     }
 }

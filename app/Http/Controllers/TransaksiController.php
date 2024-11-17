@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
-use Illuminate\Http\Request;
 use App\Models\Pelanggan;
 use App\Models\Mobil;
 use App\Models\Akun;
+use App\Models\Karyawan;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
@@ -14,21 +15,20 @@ class TransaksiController extends Controller
     // Menampilkan daftar transaksi
     public function index()
     {
-        $transaksi = Transaksi::with(['pelanggan', 'mobil'])->get(); // Memuat pelanggan dan mobil terkait
+        $transaksi = Transaksi::with(['pelanggan', 'mobil', 'karyawan'])->get(); // Memuat pelanggan, mobil, dan karyawan terkait
 
         return view('transaksi.index', compact('transaksi'));
     }
 
-
     // Menampilkan form tambah transaksi
     public function create()
     {
-        // Mengambil data pelanggan beserta mobilnya
         $pelanggan = Pelanggan::with('mobil')->get();
         $mobil = Mobil::all();
         $akun = Akun::all();
+        $karyawan = Karyawan::all(); // Ambil data karyawan
 
-        return view('transaksi.create', compact('pelanggan', 'mobil', 'akun'));
+        return view('transaksi.create', compact('pelanggan', 'mobil', 'akun', 'karyawan'));
     }
 
     // Menyimpan data transaksi baru
@@ -36,14 +36,15 @@ class TransaksiController extends Controller
     {
         $request->validate([
             'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
+            'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
             'tanggal_transaksi' => 'required|date',
-            'metode_pembayaran' => 'required|string',
-            'jenis_mobil' => 'required|string',
-            'total_pembayaran' => 'required|numeric',
-            'status' => 'required|string',
+            'metode_pembayaran' => 'required|string|max:50',
+            'status' => 'required|string|max:50',
+            'id_karyawan' => 'required|exists:karyawan,id_karyawan',
+            'jumlah_mobil_dicuci' => 'required|integer|min:1',
+            'jumlah_uang_dihasilkan' => 'required|numeric|min:0',
         ]);
 
-        // Simpan data transaksi langsung menggunakan mass assignment
         Transaksi::create([
             'id_pelanggan' => $request->id_pelanggan,
             'no_plat_mobil' => $request->no_plat_mobil,
@@ -51,45 +52,50 @@ class TransaksiController extends Controller
             'metode_pembayaran' => $request->metode_pembayaran,
             'total_pembayaran' => $request->total_pembayaran,
             'status' => $request->status,
+            'id_karyawan' => $request->id_karyawan,
             'id_akun' => Auth::user()->id_akun,
+            'jumlah_mobil_dicuci' => $request->jumlah_mobil_dicuci,
+            'jumlah_uang_dihasilkan' => $request->jumlah_uang_dihasilkan,
         ]);
 
-        // Redirect ke halaman transaksi.index dengan pesan sukses
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan.');
     }
+
+    // Menampilkan form edit transaksi
     public function edit($id)
     {
-        // Ambil transaksi berdasarkan ID
-        $transaksi = Transaksi::find($id);
-
-        // Ambil pelanggan beserta mobil terkait, untuk mendapatkan jenis mobil
+        $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
         $pelanggan = Pelanggan::with('mobil')->get();
+        $karyawan = Karyawan::all();
 
-        // Kirim data ke view
-        return view('transaksi.edit', compact('transaksi', 'pelanggan'));
+        return view('transaksi.edit', compact('transaksi', 'pelanggan', 'karyawan'));
     }
 
-    public function update(Request $request, Transaksi $transaksi)
+    // Memperbarui data transaksi
+    public function update(Request $request, $id)
     {
-        // Validasi input
+        $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
+
         $request->validate([
-            'no_plat_mobil' => 'required|string|regex:/^[A-Z0-9\s]+$/',
+            'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
             'tanggal_transaksi' => 'required|date',
             'metode_pembayaran' => 'required|string|max:50',
             'total_pembayaran' => 'required|numeric|min:0',
             'status' => 'required|string|max:50',
+            'id_karyawan' => 'required|exists:karyawan,id_karyawan',
+            'jumlah_mobil_dicuci' => 'required|integer|min:1',
+            'jumlah_uang_dihasilkan' => 'required|numeric|min:0',
         ]);
 
-        // Update transaksi dengan data yang diinputkan
         $transaksi->update($request->all());
 
-        // Redirect ke halaman transaksi.index
-        return redirect()->to('transaksi')->with('success', 'Transaksi berhasil diperbarui.');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
     // Menghapus transaksi
-    public function destroy(Transaksi $transaksi)
+    public function destroy($id)
     {
+        $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
         $transaksi->delete();
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
