@@ -42,9 +42,9 @@
                 <select class="form-select @error('existing_mobil') is-invalid @enderror" id="existing_mobil" name="existing_mobil">
                     <option value="">Pilih Mobil</option>
                     @foreach($mobil as $car)
-                        <option value="{{ $car->id_mobil }}">{{ $car->nama_mobil }}</option>
+                    <option value="{{ $car->id_mobil }}">{{ $car->nama_mobil }}</option>
                     @endforeach
-                    <option value="manual">Input Nama Mobil Manual</option>
+                    <option value="manual">Tambah Nama Mobil Baru</option>
                 </select>
                 @error('existing_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -53,7 +53,7 @@
 
             {{-- Input Nama Mobil Manual (Hidden) --}}
             <div class="mb-3" id="manual_mobil_input" style="display: none;">
-                <label for="manual_nama_mobil" class="form-label">Nama Mobil Manual</label>
+                <label for="manual_nama_mobil" class="form-label">Tambah Mobil Baru</label>
                 <input type="text" class="form-control" id="manual_nama_mobil" name="nama_mobil">
             </div>
 
@@ -85,7 +85,7 @@
 
 <script>
     // Menampilkan input manual jika opsi "manual" dipilih
-    document.getElementById('existing_mobil').addEventListener('change', function () {
+    document.getElementById('existing_mobil').addEventListener('change', function() {
         var selectedValue = this.value;
         var manualInput = document.getElementById('manual_mobil_input');
 
@@ -99,7 +99,7 @@
     });
 
     // Update harga berdasarkan jenis mobil yang dipilih
-    document.getElementById('jenis_mobil').addEventListener('change', function () {
+    document.getElementById('jenis_mobil').addEventListener('change', function() {
         var hargaInput = document.getElementById('harga');
         var jenisMobil = this.value;
 

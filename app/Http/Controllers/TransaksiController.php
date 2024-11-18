@@ -28,6 +28,9 @@ class TransaksiController extends Controller
         $akun = Akun::all();
         $karyawan = Karyawan::all(); // Ambil data karyawan
 
+        // Debug data sebelum mengirim ke view
+        // dd(compact('pelanggan', 'mobil', 'akun', 'karyawan'));
+
         return view('transaksi.create', compact('pelanggan', 'mobil', 'akun', 'karyawan'));
     }
 
@@ -41,24 +44,32 @@ class TransaksiController extends Controller
             'metode_pembayaran' => 'required|string|max:50',
             'status' => 'required|string|max:50',
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
-            'jumlah_mobil_dicuci' => 'required|integer|min:1',
-            'jumlah_uang_dihasilkan' => 'required|numeric|min:0',
         ]);
 
-        Transaksi::create([
+        // Ambil data mobil untuk mendapatkan harga berdasarkan plat nomor
+        $mobil = Mobil::where('no_plat_mobil', $request->no_plat_mobil)->first();
+        $hargaMobil = $mobil->harga->harga; // Ambil harga mobil sesuai dengan relasi harga
+
+        // Simpan transaksi
+        $transaksi = Transaksi::create([
             'id_pelanggan' => $request->id_pelanggan,
             'no_plat_mobil' => $request->no_plat_mobil,
             'tanggal_transaksi' => $request->tanggal_transaksi,
             'metode_pembayaran' => $request->metode_pembayaran,
-            'total_pembayaran' => $request->total_pembayaran,
             'status' => $request->status,
             'id_karyawan' => $request->id_karyawan,
             'id_akun' => Auth::user()->id_akun,
-            'jumlah_mobil_dicuci' => $request->jumlah_mobil_dicuci,
-            'jumlah_uang_dihasilkan' => $request->jumlah_uang_dihasilkan,
         ]);
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan.');
+        // Perbarui data jumlah mobil dicuci dan jumlah uang dihasilkan di tabel Karyawan
+        $karyawan = Karyawan::findOrFail($request->id_karyawan);
+
+        $karyawan->jumlah_mobil_dicuci = ($karyawan->jumlah_mobil_dicuci ?? 0) + 1; // Tambah 1 mobil
+        $karyawan->jumlah_uang_dihasilkan = ($karyawan->jumlah_uang_dihasilkan ?? 0) + $hargaMobil; // Tambah harga mobil
+
+        $karyawan->save(); // Simpan perubahan ke database
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan dan data karyawan diperbarui.');
     }
 
     // Menampilkan form edit transaksi
@@ -77,17 +88,23 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
 
         $request->validate([
+            'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
             'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
             'tanggal_transaksi' => 'required|date',
             'metode_pembayaran' => 'required|string|max:50',
-            'total_pembayaran' => 'required|numeric|min:0',
             'status' => 'required|string|max:50',
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
-            'jumlah_mobil_dicuci' => 'required|integer|min:1',
-            'jumlah_uang_dihasilkan' => 'required|numeric|min:0',
         ]);
 
-        $transaksi->update($request->all());
+        // Hanya perbarui data transaksi tanpa memodifikasi statistik di tabel karyawan
+        $transaksi->update([
+            'id_pelanggan' => $request->id_pelanggan,
+            'no_plat_mobil' => $request->no_plat_mobil,
+            'tanggal_transaksi' => $request->tanggal_transaksi,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'status' => $request->status,
+            'id_karyawan' => $request->id_karyawan,
+        ]);
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
@@ -96,8 +113,22 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
-        $transaksi->delete();
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
+        // Ambil data karyawan terkait
+        $karyawan = Karyawan::findOrFail($transaksi->id_karyawan);
+
+        // Ambil data mobil untuk mengurangi jumlah uang dihasilkan sesuai harga mobil
+        $mobil = Mobil::where('no_plat_mobil', $transaksi->no_plat_mobil)->first();
+        $hargaMobil = $mobil->harga->harga ?? 0;
+
+        // Kurangi jumlah mobil dicuci dan jumlah uang dihasilkan
+        $karyawan->jumlah_mobil_dicuci = max(($karyawan->jumlah_mobil_dicuci ?? 0) - 1, 0);
+        $karyawan->jumlah_uang_dihasilkan = max(($karyawan->jumlah_uang_dihasilkan ?? 0) - $hargaMobil, 0);
+
+        $karyawan->save(); // Simpan perubahan pada tabel karyawan
+
+        $transaksi->delete(); // Hapus data transaksi
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus dan data karyawan diperbarui.');
     }
 }

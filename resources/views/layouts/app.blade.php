@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/vendors/chartjs/Chart.min.css')}}">
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/css/app.css')}}">
-    <link rel="shortcut icon" href="{{ asset('voler/dist/assets/images/favicon.svg')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('voler/dist/assets/images/a2.png')}}" type="image/x-icon">
 </head>
 
 <body>
@@ -18,12 +18,12 @@
         <div id="sidebar" class='active'>
             <div class="sidebar-wrapper active">
                 <div class="sidebar-header">
-                    <h2>A2 Carwash</h2>
+                    <h1>A2 Carwash</h1>
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
 
-                        <li class="sidebar-title">Main Menu</li>
+                        <li class="sidebar-title">Menu Utama</li>
 
                         <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
                             <a href="{{ url('dashboard') }}" class='sidebar-link'>
@@ -108,7 +108,7 @@
                             <a href="#" data-toggle="dropdown"
                                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                                 <div class="avatar mr-1">
-                                    <img src="{{ asset('voler/dist/assets/images/avatar/avatar-s-1.png') }}" alt="">
+                                    <img src="{{ asset('voler/dist/assets/images/avatar/user.png') }}" alt="">
                                 </div>
                                 <div class="d-none d-md-block d-lg-inline-block">Hi, {{ Auth::user()->name }}</div>
                             </a>

@@ -1,13 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="page-title mb-3">
-    <h3>Daftar Karyawan</h3>
+<div class="d-flex justify-content-between mb-3">
+    <h1>Daftar Karyawan</h1>
+    <a href="{{ url( 'karyawan/create') }}" class="btn btn-primary mb-3">Tambah</a>
 </div>
+
+<!-- Menampilkan pesan sukses jika ada -->
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
 <div class="card">
     <div class="card-body">
-        <a href="{{ route('karyawan.create') }}" class="btn btn-primary mb-3">Tambah Karyawan</a>
-        <table class="table table-striped">
+        <table class="table table-striped" id="table1">
             <thead>
                 <tr>
                     <th>No</th>

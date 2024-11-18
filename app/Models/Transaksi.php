@@ -16,7 +16,6 @@ class Transaksi extends Model
         'no_plat_mobil',
         'tanggal_transaksi',
         'metode_pembayaran',
-        'total_pembayaran',
         'status',
         'id_akun',
         'id_karyawan',

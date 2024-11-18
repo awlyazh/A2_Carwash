@@ -12,7 +12,6 @@ class CreateTransaksiTable extends Migration
             $table->id('id_transaksi');
             $table->date('tanggal_transaksi');
             $table->enum('metode_pembayaran', ['cash', 'transfer bank', 'qris']); // Enum untuk metode pembayaran
-            $table->double('total_pembayaran');
             $table->enum('status', ['selesai', 'dibatalkan']); // Enum untuk status transaksi
             $table->string('no_plat_mobil', 20); // Foreign Key ke tabel mobil
             $table->foreign('no_plat_mobil')->references('no_plat_mobil')->on('mobil')->onDelete('cascade');

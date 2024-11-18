@@ -75,7 +75,8 @@
                     @foreach ($karyawan as $k)
                     <option value="{{ $k->nama_karyawan }}"
                         data-karyawan-id="{{ $k->id_karyawan }}"
-                        data-no-hp="{{ $k->no_hp }}">
+                        data-mobil-dicuci="{{ $k->jumlah_mobil_dicuci ?? 0 }}"
+                        data-uang-dihasilkan="{{ $k->jumlah_uang_dihasilkan ?? 0 }}">
                         {{ $k->nama_karyawan }}
                     </option>
                     @endforeach
@@ -88,22 +89,16 @@
             {{-- Input Tersembunyi untuk ID Karyawan --}}
             <input type="hidden" id="id_karyawan" name="id_karyawan">
 
-            {{-- Jumlah Mobil Dicuci --}}
+            {{-- Tampilkan Jumlah Mobil Dicuci --}}
             <div class="mb-3">
                 <label for="jumlah_mobil_dicuci" class="form-label">Jumlah Mobil yang Dicuci</label>
-                <input type="number" class="form-control @error('jumlah_mobil_dicuci') is-invalid @enderror" id="jumlah_mobil_dicuci" name="jumlah_mobil_dicuci" value="1" min="1" readonly>
-                @error('jumlah_mobil_dicuci')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input type="number" class="form-control" id="jumlah_mobil_dicuci" name="jumlah_mobil_dicuci" readonly>
             </div>
 
-            {{-- Jumlah Uang yang Dihasilkan --}}
+            {{-- Tampilkan Jumlah Uang yang Dihasilkan --}}
             <div class="mb-3">
                 <label for="jumlah_uang_dihasilkan" class="form-label">Jumlah Uang yang Dihasilkan</label>
-                <input type="number" class="form-control @error('jumlah_uang_dihasilkan') is-invalid @enderror" id="jumlah_uang_dihasilkan" name="jumlah_uang_dihasilkan" readonly>
-                @error('jumlah_uang_dihasilkan')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input type="number" class="form-control" id="jumlah_uang_dihasilkan" name="jumlah_uang_dihasilkan" readonly>
             </div>
 
             {{-- Select Metode Pembayaran --}}
@@ -150,51 +145,35 @@
         const namaMobilInput = document.getElementById('nama_mobil');
         const jenisMobilInput = document.getElementById('jenis_mobil');
         const hargaMobilInput = document.getElementById('harga_mobil');
-        const jumlahUangDihasilkanInput = document.getElementById('jumlah_uang_dihasilkan');
-        const idPelangganInput = document.getElementById('id_pelanggan'); // Hidden input for id_pelanggan
-        const totalPembayaranInput = document.getElementById('total_pembayaran');
-
+        const idPelangganInput = document.getElementById('id_pelanggan');
         const namaKaryawanSelect = document.getElementById('nama_karyawan');
-        const idKaryawanInput = document.getElementById('id_karyawan'); // Hidden input for id_karyawan
+        const idKaryawanInput = document.getElementById('id_karyawan');
+        const jumlahMobilDicuciInput = document.getElementById('jumlah_mobil_dicuci');
+        const jumlahUangDihasilkanInput = document.getElementById('jumlah_uang_dihasilkan');
 
-        // Update nama, jenis mobil, harga, dan id_pelanggan ketika plat mobil dipilih
+        // Update data mobil ketika plat mobil dipilih
         noPlatMobilSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            namaMobilInput.value = selectedOption.getAttribute('data-nama-mobil');
-            jenisMobilInput.value = selectedOption.getAttribute('data-jenis-mobil');
-            const harga = selectedOption.getAttribute('data-harga');
-            hargaMobilInput.value = harga;
-            jumlahUangDihasilkanInput.value = harga;
-            totalPembayaranInput.value = harga;
-            idPelangganInput.value = selectedOption.getAttribute('data-pelanggan-id');
+            namaMobilInput.value = selectedOption.getAttribute('data-nama-mobil') || '';
+            jenisMobilInput.value = selectedOption.getAttribute('data-jenis-mobil') || '';
+            hargaMobilInput.value = selectedOption.getAttribute('data-harga') || '';
+            idPelangganInput.value = selectedOption.getAttribute('data-pelanggan-id') || '';
         });
 
-        // Update id_karyawan ketika karyawan dipilih
+        // Update data karyawan ketika nama karyawan dipilih
         namaKaryawanSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            idKaryawanInput.value = selectedOption.getAttribute('data-karyawan-id');
-        });
-    });
+            idKaryawanInput.value = selectedOption.getAttribute('data-karyawan-id') || '';
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const noPlatMobilSelect = document.getElementById('no_plat_mobil');
-        const idPelangganInput = document.getElementById('id_pelanggan'); // Input hidden untuk id_pelanggan
+            // Ambil nilai jumlah mobil dicuci, jika kosong atau null, set ke 0
+            const mobilDicuci = selectedOption.getAttribute('data-mobil-dicuci');
+            jumlahMobilDicuciInput.value = mobilDicuci ? mobilDicuci : 0;
 
-        // Update id_pelanggan ketika plat mobil dipilih
-        noPlatMobilSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            idPelangganInput.value = selectedOption.getAttribute('data-pelanggan-id');
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const karyawanSelect = document.getElementById('nama_karyawan');
-        const idKaryawanInput = document.getElementById('id_karyawan');
-
-        karyawanSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            idKaryawanInput.value = selectedOption.getAttribute('data-karyawan-id');
+            // Ambil nilai jumlah uang dihasilkan, jika kosong atau null, set ke 0
+            const uangDihasilkan = selectedOption.getAttribute('data-uang-dihasilkan');
+            jumlahUangDihasilkanInput.value = uangDihasilkan ? uangDihasilkan : 0;
         });
     });
 </script>
+
 @endsection

@@ -10,13 +10,7 @@ class Karyawan extends Model
     protected $primaryKey = 'id_karyawan';
     public $incrementing = true;
     protected $keyType = 'int';
-
-    protected $fillable = [
-        'nama_karyawan',
-        'no_hp',
-        'jumlah_mobil_dicuci',
-        'jumlah_uang_dihasilkan',
-    ];
+    protected $fillable = ['nama_karyawan', 'no_hp', 'jumlah_mobil_dicuci', 'jumlah_uang_dihasilkan'];
 
     // Relasi dengan Transaksi (Karyawan memiliki banyak transaksi)
     public function transaksi()

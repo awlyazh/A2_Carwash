@@ -22,7 +22,7 @@
             {{-- Input No. Telepon --}}
             <div class="mb-3">
                 <label for="no_hp" class="form-label">No. Telepon</label>
-                <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="no_hp" name="no_hp" value="{{ old('no_hp', $pelanggan->no_hp) }}" required pattern="[0-9\s]+" title="Hanya angka yang diperbolehkan">
+                <input type="text" class="form-control @error('no_hp') is-invalid @enderror" id="no_hp" name="no_hp" value="{{ old('no_hp', $pelanggan->no_hp) }}" required>
                 @error('no_hp')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -31,40 +31,28 @@
             {{-- Input Nomor Plat Mobil --}}
             <div class="mb-3">
                 <label for="no_plat_mobil" class="form-label">Nomor Plat Mobil</label>
-                <input type="text" class="form-control @error('no_plat_mobil') is-invalid @enderror" id="no_plat_mobil" name="no_plat_mobil" value="{{ old('no_plat_mobil', $pelanggan->mobil->no_plat_mobil ?? '') }}" required>
+                <input type="text" class="form-control @error('no_plat_mobil') is-invalid @enderror" id="no_plat_mobil" name="no_plat_mobil" value="{{ old('no_plat_mobil', optional($pelanggan->mobil->first())->no_plat_mobil) }}" required>
                 @error('no_plat_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            {{-- Dropdown Nama Mobil --}}
-<div class="mb-3">
-    <label for="existing_mobil" class="form-label">Nama Mobil</label>
-    <select class="form-select @error('nama_mobil') is-invalid @enderror" id="existing_mobil" name="nama_mobil">
-        <option value="">Pilih Mobil</option>
-        @foreach($mobil as $car)
-            <option value="{{ $car->nama_mobil }}" {{ old('nama_mobil', $pelanggan->mobil->nama_mobil ?? '') == $car->nama_mobil ? 'selected' : '' }}>
-                {{ $car->nama_mobil }}
-            </option>
-        @endforeach
-        <option value="manual">Input Nama Mobil Manual</option>
-    </select>
-    @error('nama_mobil')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
+            {{-- Input Nama Mobil --}}
+            <div class="mb-3">
+                <label for="nama_mobil" class="form-label">Nama Mobil</label>
+                <input type="text" class="form-control @error('nama_mobil') is-invalid @enderror" id="nama_mobil" name="nama_mobil" value="{{ old('nama_mobil', optional($pelanggan->mobil->first())->nama_mobil) }}" required>
+                @error('nama_mobil')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
             {{-- Dropdown Jenis Mobil --}}
             <div class="mb-3">
                 <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
                 <select class="form-select @error('jenis_mobil') is-invalid @enderror" id="jenis_mobil" name="jenis_mobil" required>
                     <option value="">Pilih Jenis Mobil</option>
-                    @foreach($jenis_mobil as $key => $value)
-                        <option value="{{ $key }}" {{ old('jenis_mobil', $pelanggan->mobil->jenis_mobil ?? '') == $key ? 'selected' : '' }}>
-                            {{ $value }}
-                        </option>
-                    @endforeach
+                    <option value="kecil" {{ old('jenis_mobil', optional($pelanggan->mobil->first())->jenis_mobil) == 'kecil' ? 'selected' : '' }}>Mobil Kecil</option>
+                    <option value="besar" {{ old('jenis_mobil', optional($pelanggan->mobil->first())->jenis_mobil) == 'besar' ? 'selected' : '' }}>Mobil Besar</option>
                 </select>
                 @error('jenis_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -74,7 +62,7 @@
             {{-- Input Harga --}}
             <div class="mb-3">
                 <label for="harga" class="form-label">Harga</label>
-                <input type="text" class="form-control" id="harga" name="harga" value="{{ old('harga', $pelanggan->mobil->harga->harga ?? '') }}" readonly>
+                <input type="text" class="form-control" id="harga" name="harga" value="{{ old('harga', optional(optional($pelanggan->mobil->first())->harga)->harga) }}" readonly>
             </div>
 
             {{-- Tombol Submit --}}
@@ -85,26 +73,13 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const existingMobilSelect = document.getElementById('existing_mobil');
-        const manualMobilInput = document.getElementById('manual_mobil_input');
+    document.addEventListener('DOMContentLoaded', function() {
         const jenisMobilSelect = document.getElementById('jenis_mobil');
         const hargaInput = document.getElementById('harga');
 
-        // Tampilkan input manual jika opsi "manual" dipilih
-        existingMobilSelect.addEventListener('change', function () {
-            if (this.value === 'manual') {
-                manualMobilInput.style.display = 'block';
-                manualMobilInput.querySelector('input').setAttribute('required', 'required');
-            } else {
-                manualMobilInput.style.display = 'none';
-                manualMobilInput.querySelector('input').removeAttribute('required');
-            }
-        });
-
         // Update harga berdasarkan jenis mobil
-        const hargaMobil = @json($harga->pluck('harga', 'jenis_mobil'));
-        jenisMobilSelect.addEventListener('change', function () {
+        const hargaMobil = @json($harga);
+        jenisMobilSelect.addEventListener('change', function() {
             hargaInput.value = hargaMobil[this.value] || '';
         });
 
@@ -115,4 +90,5 @@
         }
     });
 </script>
+
 @endsection

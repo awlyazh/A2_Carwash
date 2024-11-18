@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/vendors/chartjs/Chart.min.css')}}">
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.css')}}">
     <link rel="stylesheet" href="{{ asset('voler/dist/assets/css/app.css')}}">
-    <link rel="shortcut icon" href="{{ asset('voler/dist/assets/images/favicon.svg')}}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('voler/dist/assets/images/a2.png')}}" type="image/x-icon">
 </head>
 
 <body>

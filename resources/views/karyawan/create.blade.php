@@ -3,7 +3,6 @@
 @section('content')
 <div class="page-title mb-3">
     <h3>Tambah Karyawan</h3>
-    <a href="{{ route('karyawan.index') }}" class="btn btn-secondary">Kembali</a>
 </div>
 
 <div class="card">
