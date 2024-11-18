@@ -22,7 +22,8 @@ class Pelanggan extends Model
 
     // Relasi ke model Mobil
     public function mobil()
-    {
-        return $this->hasMany(Mobil::class, 'id_pelanggan', 'id_pelanggan');
-    }
+{
+    return $this->hasOne(Mobil::class, 'id_pelanggan');
+}
+
 }

@@ -28,5 +28,9 @@ class MobilController extends Controller
 
     return response()->json(['success' => 'Mobil berhasil ditambahkan']);
 }
+    public function mobil()
+    {
+        return $this->hasMany(Mobil::class, 'id_pelanggan');
+    }
 
 }

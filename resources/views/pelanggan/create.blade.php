@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="page-title mb-3">
-    <h3>Tambah Pelanggan</h3>
+    <h3>Tambah Pelanggan </h3>
 </div>
 <div class="card">
     <div class="card-body">
-        <form action="{{ url('pelanggan/store') }}" method="POST">
+        <form action="{{ route('pelanggan.store') }}" method="POST">
             @csrf
 
             {{-- Input Nama Pelanggan --}}
@@ -36,30 +36,34 @@
                 @enderror
             </div>
 
-            {{-- Input Nama Mobil --}}
-            <div class="mb-3 mt-3"> <!-- Menambahkan margin-top -->
-                <label for="nama_mobil" class="form-label">Nama Mobil</label>
-                <select id="nama_mobil" name="nama_mobil" class="form-select @error('nama_mobil') is-invalid @enderror" required onchange="checkForNewCar()">
-                    <option value="">Pilih Nama Mobil</option>
-                    {{-- Data nama mobil akan diambil dari database --}}
-                    <option value="Tambah Mobil Baru">Tambah Mobil Baru</option>
-                    @foreach ($masterNamaMobils as $mobil)
-                    <option value="{{ $mobil->nama_mobil }}">{{ $mobil->nama_mobil }}</option>
+            {{-- Dropdown Nama Mobil --}}
+            <div class="mb-3">
+                <label for="existing_mobil" class="form-label">Nama Mobil</label>
+                <select class="form-select @error('existing_mobil') is-invalid @enderror" id="existing_mobil" name="existing_mobil">
+                    <option value="">Pilih Mobil</option>
+                    @foreach($mobil as $car)
+                        <option value="{{ $car->id_mobil }}">{{ $car->nama_mobil }}</option>
                     @endforeach
+                    <option value="manual">Input Nama Mobil Manual</option>
                 </select>
-                <input type="text" class="form-control mt-2 d-none" id="new_car_name" name="new_car_name" placeholder="Masukkan Nama Mobil Baru">
-                @error('nama_mobil')
+                @error('existing_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            {{-- Input Jenis Mobil --}}
+            {{-- Input Nama Mobil Manual (Hidden) --}}
+            <div class="mb-3" id="manual_mobil_input" style="display: none;">
+                <label for="manual_nama_mobil" class="form-label">Nama Mobil Manual</label>
+                <input type="text" class="form-control" id="manual_nama_mobil" name="nama_mobil">
+            </div>
+
+            {{-- Dropdown Jenis Mobil --}}
             <div class="mb-3">
                 <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
                 <select class="form-select @error('jenis_mobil') is-invalid @enderror" id="jenis_mobil" name="jenis_mobil" required>
                     <option value="">Pilih Jenis Mobil</option>
-                    <option value="kecil">Mobil Kecil</option>
-                    <option value="besar">Mobil Besar</option>
+                    <option value="kecil" {{ old('jenis_mobil') == 'kecil' ? 'selected' : '' }}>Mobil Kecil</option>
+                    <option value="besar" {{ old('jenis_mobil') == 'besar' ? 'selected' : '' }}>Mobil Besar</option>
                 </select>
                 @error('jenis_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -72,64 +76,40 @@
                 <input type="text" class="form-control" id="harga" name="harga" value="{{ old('harga') }}" readonly>
             </div>
 
-
             {{-- Tombol Submit --}}
             <button type="submit" class="btn btn-primary">Simpan</button>
-            <a href="{{ url('pelanggan') }}" class="btn btn-secondary">Kembali</a>
+            <a href="{{ route('pelanggan.index') }}" class="btn btn-secondary">Kembali</a>
         </form>
     </div>
 </div>
 
 <script>
-    // Fungsi untuk menampilkan input nama mobil baru jika opsi 'Tambah Mobil Baru' dipilih
-    function checkForNewCar() {
-        var carSelect = document.getElementById("nama_mobil");
-        var newCarInput = document.getElementById("new_car_name");
+    // Menampilkan input manual jika opsi "manual" dipilih
+    document.getElementById('existing_mobil').addEventListener('change', function () {
+        var selectedValue = this.value;
+        var manualInput = document.getElementById('manual_mobil_input');
 
-        if (carSelect.value === "Tambah Mobil Baru") {
-            newCarInput.classList.remove("d-none");  // Menampilkan input baru
+        if (selectedValue === "manual") {
+            manualInput.style.display = "block";
+            manualInput.querySelector('input').setAttribute('required', 'required');
         } else {
-            newCarInput.classList.add("d-none");  // Menyembunyikan input
-            // Mengatur nilai input nama mobil menjadi pilihan dropdown jika tidak memilih 'Tambah Mobil Baru'
-            newCarInput.value = '';  // Menghapus nilai input baru
-        }
-    }
-
-    // Fungsi untuk memperbarui harga berdasarkan jenis mobil yang dipilih
-    function updateHarga() {
-    var jenisMobil = document.getElementById("jenis_mobil");
-    var hargaInput = document.getElementById("harga");
-    var idHargaInput = document.getElementById("id_harga"); // Hidden input
-
-    var selectedOption = jenisMobil.options[jenisMobil.selectedIndex];
-    var harga = selectedOption.getAttribute("data-harga");
-    var idHarga = selectedOption.getAttribute("data-id-harga"); // Tambahkan data-id-harga pada opsi dropdown
-
-    if (harga) {
-        hargaInput.value = "Rp " + harga.toLocaleString(); // Format harga dengan pemisah ribuan
-        idHargaInput.value = idHarga; // Set nilai id_harga
-    } else {
-        hargaInput.value = "";
-        idHargaInput.value = ""; // Kosongkan jika tidak ada harga
-    }
-}
-
-document.getElementById('jenis_mobil').addEventListener('change', function () {
-        var hargaInput = document.getElementById('harga');
-        var jenisMobil = this.value;
-
-        if (jenisMobil === 'kecil') {
-            hargaInput.value = "Rp 50,000"; // Harga mobil kecil
-        } else if (jenisMobil === 'besar') {
-            hargaInput.value = "Rp 60,000"; // Harga mobil besar
-        } else {
-            hargaInput.value = ""; // Kosongkan jika tidak ada jenis mobil
+            manualInput.style.display = "none";
+            manualInput.querySelector('input').removeAttribute('required');
         }
     });
 
-    // Inisialisasi harga saat pertama kali memilih jenis mobil
-    document.addEventListener("DOMContentLoaded", function() {
-        updateHarga();
+    // Update harga berdasarkan jenis mobil yang dipilih
+    document.getElementById('jenis_mobil').addEventListener('change', function () {
+        var hargaInput = document.getElementById('harga');
+        var jenisMobil = this.value;
+
+        if (jenisMobil === "kecil") {
+            hargaInput.value = "Rp 50.000"; // Simulasi harga berdasarkan jenis
+        } else if (jenisMobil === "besar") {
+            hargaInput.value = "Rp 60.000"; // Simulasi harga berdasarkan jenis
+        } else {
+            hargaInput.value = "";
+        }
     });
 </script>
 

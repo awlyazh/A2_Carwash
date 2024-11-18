@@ -10,115 +10,135 @@ use App\Models\Harga;
 class PelangganController extends Controller
 {
     public function index()
-    {
-        $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
-            ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga')
-            ->select('pelanggan.*', 'mobil.no_plat_mobil', 'mobil.nama_mobil', 'mobil.jenis_mobil', 'harga.harga')
-            ->get();
+{
+    $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
+        ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga')
+        ->select(
+            'pelanggan.id_pelanggan',
+            'pelanggan.nama',
+            'pelanggan.no_hp',
+            'mobil.no_plat_mobil',
+            'mobil.nama_mobil',
+            'mobil.jenis_mobil',
+            'harga.harga'
+        )
+        ->get();
 
-        return view('pelanggan.index', compact('pelanggan'));
-    }
+    return view('pelanggan.index', compact('pelanggan'));
+}
 
+    
     public function create()
     {
-        return view('pelanggan.create', compact('masterNamaMobils', 'harga'));
+        // Ambil data harga dan mobil yang sudah ada
+        $harga = Harga::all();
+        $mobil = Mobil::all();
+
+        return view('pelanggan.create', compact('harga', 'mobil'));
     }
 
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'nama' => 'required|string|max:100',
             'no_hp' => 'required|digits_between:10,15|numeric',
             'no_plat_mobil' => 'required|string|max:50|unique:mobil,no_plat_mobil',
-            'nama_mobil' => 'required|string|max:100',
-            'jenis_mobil' => 'required|string|max:100',
-            'new_car_name' => 'nullable|string|max:100',
+            'nama_mobil' => 'nullable|string|max:100',
+            'jenis_mobil' => 'required|exists:harga,jenis_mobil',
         ]);
-    
-        $namaMobil = $request->input('nama_mobil') === "Tambah Mobil Baru" 
-            ? $request->input('new_car_name') 
-            : $request->input('nama_mobil');
-    
-        if ($request->input('nama_mobil') === "Tambah Mobil Baru" && empty($request->input('new_car_name'))) {
-            return redirect()->back()->withErrors(['new_car_name' => 'Nama mobil baru harus diisi jika memilih "Tambah Mobil Baru".']);
-        }
-    
-        $jenisMobil = $request->input('jenis_mobil');
-        $hargaData = Harga::where('jenis_mobil', $jenisMobil)->first(); 
-    
-        if (!$hargaData) {
-            return redirect()->back()->withErrors(['jenis_mobil' => 'Jenis mobil tidak ditemukan dalam daftar harga.']);
-        }
-    
-        $idHarga = $hargaData->id_harga; 
-    
-        $existingMobil = Mobil::where('no_plat_mobil', $request->input('no_plat_mobil'))
-            ->where('id_harga', $idHarga)
-            ->first();
-    
-        if ($existingMobil) {
-            return redirect()->back()->withErrors(['no_plat_mobil' => 'Mobil dengan plat nomor ini dan harga yang sama sudah terdaftar.']);
-        }
-    
+
+        // Buat data pelanggan baru
         $pelanggan = Pelanggan::create([
             'nama' => $request->input('nama'),
             'no_hp' => $request->input('no_hp'),
         ]);
-    
-        Mobil::create([
-            'no_plat_mobil' => $request->input('no_plat_mobil'),
-            'nama_mobil' => $namaMobil,
-            'jenis_mobil' => $jenisMobil,
-            'id_pelanggan' => $pelanggan->id_pelanggan,
-            'id_harga' => $idHarga,
-        ]);
-    
+
+        // Cek apakah user memilih input manual untuk nama mobil
+        if ($request->input('nama_mobil') == 'manual') {
+            // Validasi nama mobil manual
+            $request->validate([
+                'manual_nama_mobil' => 'required|string|max:100|unique:mobil,nama_mobil',
+            ]);
+
+            // Simpan nama mobil manual ke tabel mobil
+            $mobil = Mobil::create([
+                'no_plat_mobil' => $request->input('no_plat_mobil'),
+                'nama_mobil' => $request->input('manual_nama_mobil'),
+                'jenis_mobil' => $request->input('jenis_mobil'),
+                'id_pelanggan' => $pelanggan->id_pelanggan,
+                'id_harga' => Harga::where('jenis_mobil', $request->input('jenis_mobil'))->value('id_harga'),
+            ]);
+        } else {
+            // Gunakan nama mobil yang dipilih dari dropdown
+            $mobil = Mobil::create([
+                'no_plat_mobil' => $request->input('no_plat_mobil'),
+                'nama_mobil' => $request->input('nama_mobil'),
+                'jenis_mobil' => $request->input('jenis_mobil'),
+                'id_pelanggan' => $pelanggan->id_pelanggan,
+                'id_harga' => Harga::where('jenis_mobil', $request->input('jenis_mobil'))->value('id_harga'),
+            ]);
+        }
+
         return redirect()->route('pelanggan.index')->with('success', 'Pelanggan dan mobil berhasil ditambahkan.');
-    }    
+    }
 
     public function edit($id)
-    {
-        $pelanggan = Pelanggan::findOrFail($id);
-        $mobil = Mobil::where('id_pelanggan', $id)->first();
-        $harga = Harga::all();
+{
+    $pelanggan = Pelanggan::with('mobil')->findOrFail($id); // Ambil data pelanggan beserta mobil terkait
+    $harga = Harga::all(); // Ambil data harga
+    $jenis_mobil = ['kecil' => 'Mobil Kecil', 'besar' => 'Mobil Besar']; // Pilihan jenis mobil
+    $mobil = Mobil::all(); // Ambil semua data mobil untuk dropdown
 
-        return view('pelanggan.edit', compact('pelanggan', 'mobil', 'harga', 'masterNamaMobils'));
-    }
+    return view('pelanggan.edit', compact('pelanggan', 'harga', 'jenis_mobil', 'mobil'));
+}
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:100',
-            'no_hp' => 'required|digits_between:10,15|numeric',
-            'no_plat_mobil' => 'required|string|max:50',
-            'nama_mobil' => 'required|string|max:100',
-            'jenis_mobil' => 'required|string|max:100',
-            'id_harga' => 'required|exists:harga,id_harga',
-        ]);
+        
 
-        $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->update([
-            'nama' => $request->input('nama'),
-            'no_hp' => $request->input('no_hp'),
-        ]);
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'nama' => 'required|string|max:100',
+        'no_hp' => 'required|digits_between:10,15|numeric',
+        'no_plat_mobil' => 'required|string|max:50',
+        'nama_mobil' => 'required|string|max:100',
+        'jenis_mobil' => 'required|in:kecil,besar',
+    ]);
 
-        $mobil = Mobil::where('id_pelanggan', $id)->first();
+    // Update data pelanggan
+    $pelanggan = Pelanggan::findOrFail($id);
+    $pelanggan->update([
+        'nama' => $validated['nama'],
+        'no_hp' => $validated['no_hp'],
+    ]);
+
+    // Update data mobil terkait
+    $mobil = Mobil::where('id_pelanggan', $pelanggan->id_pelanggan)->first();
+    if ($mobil) {
         $mobil->update([
-            'no_plat_mobil' => $request->input('no_plat_mobil'),
-            'nama_mobil' => $request->input('nama_mobil'),
-            'jenis_mobil' => $request->input('jenis_mobil'),
-            'id_harga' => $request->input('id_harga'),
+            'no_plat_mobil' => $validated['no_plat_mobil'],
+            'nama_mobil' => $validated['nama_mobil'],
+            'jenis_mobil' => $validated['jenis_mobil'],
+            'id_harga' => Harga::where('jenis_mobil', $validated['jenis_mobil'])->value('id_harga'),
         ]);
-
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan dan mobil berhasil diperbarui');
     }
+
+    return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
+}
+
+
 
     public function destroy($id)
     {
+        // Hapus data mobil dan pelanggan terkait
         $pelanggan = Pelanggan::findOrFail($id);
-        Mobil::where('id_pelanggan', $id)->delete();
+        $mobil = Mobil::where('id_pelanggan', $pelanggan->id_pelanggan)->first();
+
+        // Hapus mobil terlebih dahulu
+        $mobil->delete();
+        // Hapus pelanggan
         $pelanggan->delete();
 
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil dihapus.');
+        return redirect()->route('pelanggan.index')->with('success', 'Pelanggan dan mobil berhasil dihapus.');
     }
 }
