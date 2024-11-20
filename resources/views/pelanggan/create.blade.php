@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="page-title mb-3">
-    <h3>Tambah Pelanggan </h3>
+    <h3>Tambah Pelanggan</h3>
 </div>
 <div class="card">
     <div class="card-body">
@@ -36,25 +36,13 @@
                 @enderror
             </div>
 
-            {{-- Dropdown Nama Mobil --}}
+            {{-- Input Nama Mobil --}}
             <div class="mb-3">
-                <label for="existing_mobil" class="form-label">Nama Mobil</label>
-                <select class="form-select @error('existing_mobil') is-invalid @enderror" id="existing_mobil" name="existing_mobil">
-                    <option value="">Pilih Mobil</option>
-                    @foreach($mobil as $car)
-                    <option value="{{ $car->id_mobil }}">{{ $car->nama_mobil }}</option>
-                    @endforeach
-                    <option value="manual">Tambah Nama Mobil Baru</option>
-                </select>
-                @error('existing_mobil')
+                <label for="nama_mobil" class="form-label">Nama Mobil</label>
+                <input type="text" class="form-control @error('nama_mobil') is-invalid @enderror" id="nama_mobil" name="nama_mobil" value="{{ old('nama_mobil') }}" required>
+                @error('nama_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-            </div>
-
-            {{-- Input Nama Mobil Manual (Hidden) --}}
-            <div class="mb-3" id="manual_mobil_input" style="display: none;">
-                <label for="manual_nama_mobil" class="form-label">Tambah Mobil Baru</label>
-                <input type="text" class="form-control" id="manual_nama_mobil" name="nama_mobil">
             </div>
 
             {{-- Dropdown Jenis Mobil --}}
@@ -62,18 +50,19 @@
                 <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
                 <select class="form-select @error('jenis_mobil') is-invalid @enderror" id="jenis_mobil" name="jenis_mobil" required>
                     <option value="">Pilih Jenis Mobil</option>
-                    <option value="kecil" {{ old('jenis_mobil') == 'kecil' ? 'selected' : '' }}>Mobil Kecil</option>
-                    <option value="besar" {{ old('jenis_mobil') == 'besar' ? 'selected' : '' }}>Mobil Besar</option>
+                    @foreach($harga as $item)
+                        <option value="{{ $item->jenis_mobil }}">{{ ucfirst($item->jenis_mobil) }}</option>
+                    @endforeach
                 </select>
                 @error('jenis_mobil')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            {{-- Input Harga --}}
+            {{-- Input Harga (Readonly) --}}
             <div class="mb-3">
                 <label for="harga" class="form-label">Harga</label>
-                <input type="text" class="form-control" id="harga" name="harga" value="{{ old('harga') }}" readonly>
+                <input type="text" class="form-control" id="harga" name="harga" readonly placeholder="Harga otomatis muncul berdasarkan jenis mobil">
             </div>
 
             {{-- Tombol Submit --}}
@@ -84,33 +73,22 @@
 </div>
 
 <script>
-    // Menampilkan input manual jika opsi "manual" dipilih
-    document.getElementById('existing_mobil').addEventListener('change', function() {
-        var selectedValue = this.value;
-        var manualInput = document.getElementById('manual_mobil_input');
-
-        if (selectedValue === "manual") {
-            manualInput.style.display = "block";
-            manualInput.querySelector('input').setAttribute('required', 'required');
-        } else {
-            manualInput.style.display = "none";
-            manualInput.querySelector('input').removeAttribute('required');
-        }
-    });
+    // Ambil data harga dari controller ke JavaScript
+    var hargaData = @json($harga);
 
     // Update harga berdasarkan jenis mobil yang dipilih
     document.getElementById('jenis_mobil').addEventListener('change', function() {
         var hargaInput = document.getElementById('harga');
         var jenisMobil = this.value;
 
-        if (jenisMobil === "kecil") {
-            hargaInput.value = "Rp 50.000"; // Simulasi harga berdasarkan jenis
-        } else if (jenisMobil === "besar") {
-            hargaInput.value = "Rp 60.000"; // Simulasi harga berdasarkan jenis
+        // Cari data harga berdasarkan jenis mobil
+        var selectedHarga = hargaData.find(item => item.jenis_mobil === jenisMobil);
+
+        if (selectedHarga) {
+            hargaInput.value = "Rp " + parseInt(selectedHarga.harga).toLocaleString('id-ID');
         } else {
             hargaInput.value = "";
         }
     });
 </script>
-
 @endsection

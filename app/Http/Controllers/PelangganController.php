@@ -10,24 +10,24 @@ use App\Models\Harga;
 class PelangganController extends Controller
 {
     public function index()
-    {
-        $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
-            ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga')
-            ->select(
-                'pelanggan.id_pelanggan',
-                'pelanggan.nama',
-                'pelanggan.no_hp',
-                'mobil.no_plat_mobil',
-                'mobil.nama_mobil',
-                'mobil.jenis_mobil',
-                'harga.harga'
-            )
-            ->get();
+{
+    $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
+        ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga')
+        ->select(
+            'pelanggan.id_pelanggan',
+            'pelanggan.nama',
+            'pelanggan.no_hp',
+            'mobil.no_plat_mobil',
+            'mobil.nama_mobil',
+            'mobil.jenis_mobil',
+            'harga.harga'
+        )
+        ->get();
 
-        return view('pelanggan.index', compact('pelanggan'));
-    }
+    return view('pelanggan.index', compact('pelanggan'));
+}
 
-
+    
     public function create()
     {
         // Ambil data harga dan mobil yang sudah ada
@@ -84,45 +84,49 @@ class PelangganController extends Controller
     }
 
     public function edit($id)
-    {
-        $pelanggan = Pelanggan::with('mobil')->findOrFail($id); // Ambil pelanggan beserta mobil terkait
-        $mobil = Mobil::all(); // Data semua mobil
-        $harga = Harga::pluck('harga', 'jenis_mobil'); // Harga berdasarkan jenis mobil
+{
+    $pelanggan = Pelanggan::with('mobil')->findOrFail($id); // Ambil data pelanggan beserta mobil terkait
+    $harga = Harga::all(); // Ambil data harga
+    $jenis_mobil = ['kecil' => 'Mobil Kecil', 'besar' => 'Mobil Besar']; // Pilihan jenis mobil
+    $mobil = Mobil::all(); // Ambil semua data mobil untuk dropdown
 
-        return view('pelanggan.edit', compact('pelanggan', 'mobil', 'harga'));
+    return view('pelanggan.edit', compact('pelanggan', 'harga', 'jenis_mobil', 'mobil'));
+}
+
+        
+
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'nama' => 'required|string|max:100',
+        'no_hp' => 'required|digits_between:10,15|numeric',
+        'no_plat_mobil' => 'required|string|max:50',
+        'nama_mobil' => 'required|string|max:100',
+        'jenis_mobil' => 'required|in:kecil,besar',
+    ]);
+
+    // Update data pelanggan
+    $pelanggan = Pelanggan::findOrFail($id);
+    $pelanggan->update([
+        'nama' => $validated['nama'],
+        'no_hp' => $validated['no_hp'],
+    ]);
+
+    // Update data mobil terkait
+    $mobil = Mobil::where('id_pelanggan', $pelanggan->id_pelanggan)->first();
+    if ($mobil) {
+        $mobil->update([
+            'no_plat_mobil' => $validated['no_plat_mobil'],
+            'nama_mobil' => $validated['nama_mobil'],
+            'jenis_mobil' => $validated['jenis_mobil'],
+            'id_harga' => Harga::where('jenis_mobil', $validated['jenis_mobil'])->value('id_harga'),
+        ]);
     }
 
-    public function update(Request $request, $id)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'no_hp' => 'required|digits_between:10,15|numeric',
-            'no_plat_mobil' => 'required|string|max:50',
-            'nama_mobil' => 'required|string|max:100',
-            'jenis_mobil' => 'required|in:kecil,besar',
-        ]);
+    return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
+}
 
-        // Update pelanggan
-        $pelanggan = Pelanggan::findOrFail($id);
-        $pelanggan->update([
-            'nama' => $validated['nama'],
-            'no_hp' => $validated['no_hp'],
-        ]);
 
-        // Update mobil terkait
-        $mobil = Mobil::where('id_pelanggan', $pelanggan->id_pelanggan)->first();
-        if ($mobil) {
-            $mobil->update([
-                'no_plat_mobil' => $validated['no_plat_mobil'],
-                'nama_mobil' => $validated['nama_mobil'],
-                'jenis_mobil' => $validated['jenis_mobil'],
-                'id_harga' => Harga::where('jenis_mobil', $validated['jenis_mobil'])->value('id_harga'),
-            ]);
-        }
-
-        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
-    }
 
     public function destroy($id)
     {

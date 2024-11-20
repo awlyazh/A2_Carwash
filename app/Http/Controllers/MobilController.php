@@ -18,12 +18,14 @@ class MobilController extends Controller
         'nama_mobil' => 'required|string|max:255',
         'jenis_mobil' => 'required|string|max:255',
         'no_plat_mobil' => 'nullable|string|unique:mobils,no_plat_mobil',
+        'id_harga' => 'required|exists:harga,id_harga',
     ]);
 
     Mobil::create([
         'nama_mobil' => $request->nama_mobil,
         'jenis_mobil' => $request->jenis_mobil,
         'no_plat_mobil' => $request->no_plat_mobil,
+        'id_harga' => $request->id_harga,
     ]);
 
     return response()->json(['success' => 'Mobil berhasil ditambahkan']);

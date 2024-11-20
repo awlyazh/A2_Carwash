@@ -9,6 +9,7 @@ use App\Http\Controllers\AkunController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\HargaController;
 
 Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
 
@@ -32,6 +33,9 @@ Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     // Rute lainnya...
 });
+
+
+Route::resource('harga', HargaController::class);
 
 // Route untuk transaksi (akses admin dan karyawan)
 Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,8 +9,11 @@ class Harga extends Model
 {
     use HasFactory;
 
-    protected $table = 'harga';
-    protected $primaryKey = 'id_harga';
+    protected $table = 'harga'; // Nama tabel
+    protected $primaryKey = 'id_harga'; // Primary key
+    public $timestamps = true; // Timestamps aktif
+
+    // Kolom yang bisa diisi (mass assignable)
     protected $fillable = ['jenis_mobil', 'harga'];
 
     public function mobil()
@@ -17,4 +21,3 @@ class Harga extends Model
         return $this->hasMany(Mobil::class, 'id_harga', 'id_harga');
     }
 }
-
