@@ -17,7 +17,7 @@
     <div class="card-body">
         <table class="table table-striped" id="table1">
             <thead>
-                <tr class="text-center"> <!-- Added text-center class here for the headers -->
+                <tr class="text-center">
                     <th>No</th>
                     <th>Jenis Mobil</th>
                     <th>Harga</th>
@@ -26,9 +26,10 @@
             </thead>
             <tbody>
                 @foreach ($harga as $index => $item)
+                <tr class="text-center"> <!-- Tambahkan <tr> di sini -->
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->jenis_mobil }}</td>
-                    <td>Rp {{ number_format($item->harga, 3, ',', '.') }}</td>
+                    <td>Rp {{ number_format($item->harga, 3, ',', '.') }}</td> <!-- Format harga -->
                     <td>
                         <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('harga.destroy', $item->id_harga) }}" method="POST" style="display:inline;">

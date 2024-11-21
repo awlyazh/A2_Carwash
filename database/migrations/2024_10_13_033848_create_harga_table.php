@@ -16,7 +16,7 @@ class CreateHargaTable extends Migration
         Schema::create('harga', function (Blueprint $table) {
             $table->id('id_harga');                         // Primary Key
             $table->string('jenis_mobil', 50)->unique();    // Jenis mobil, unik
-            $table->decimal('harga', 10, 2)->default(0.00); // Harga untuk jenis mobil tersebut, default 0.00
+            $table->decimal('harga', 10, 3)->default(0.000); // Harga untuk jenis mobil tersebut, default 0.00
             $table->timestamps();
         });
     }
