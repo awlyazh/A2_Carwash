@@ -29,7 +29,11 @@ class PelangganController extends Controller
 
 public function create()
 {
-    $harga = Harga::all(); // Ambil semua harga
+    $harga = Harga::all()->map(function ($item) {
+        $item->harga = $item->harga * 1000; // Pastikan harga dikalikan jika perlu
+        return $item;
+    });
+    
     $mobil = Mobil::select('nama_mobil')->distinct()->get(); // Ambil nama mobil yang ada
 
     return view('pelanggan.create', compact('harga', 'mobil'));
@@ -82,7 +86,11 @@ public function edit($id)
 {
     $pelanggan = Pelanggan::findOrFail($id);
     $mobil = Mobil::all()->unique('nama_mobil'); // Menghapus duplikasi nama mobil
-    $harga = Harga::all();
+    $harga = Harga::all()->map(function ($item) {
+        $item->harga = $item->harga * 1000; // Pastikan harga dikalikan jika perlu
+        return $item;
+    });
+    
 
     return view('pelanggan.edit', compact('pelanggan', 'mobil', 'harga'));
 }

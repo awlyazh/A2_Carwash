@@ -108,8 +108,9 @@ document.getElementById('jenis_mobil').addEventListener('change', function () {
     const selectedHarga = hargaData.find(item => item.jenis_mobil === jenisMobil);
 
     hargaInput.value = selectedHarga ? 
-        "Rp " + parseInt(selectedHarga.harga).toLocaleString('id-ID') : 
-        "";
+        "Rp " + parseInt(selectedHarga.harga).toLocaleString('id-ID', { minimumFractionDigits: 0 }) : 
+        ""; // Kosongkan jika harga tidak ditemukan
 });
+
 </script>
 @endsection
