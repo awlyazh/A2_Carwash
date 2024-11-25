@@ -9,15 +9,15 @@
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <h3>Login</h3>
-                            <p>Masukkan username atau email dan password Anda.</p>
+                            <p>Masukkan email dan password Anda.</p>
                         </div>
 
                         <form action="{{ route('login') }}" method="POST">
                             @csrf <!-- Token CSRF untuk keamanan -->
 
-                            <!-- Validasi Username atau Email -->
+                            <!-- Validasi Email -->
                             <div class="form-group position-relative has-icon-left">
-                                <label for="login">Username atau Email</label>
+                                <label for="login">Email</label>
                                 <div class="position-relative">
                                     <input type="text" class="form-control" id="login" name="login" value="{{ old('login') }}"
                                         required minlength="5" maxlength="50"
