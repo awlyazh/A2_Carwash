@@ -1,0 +1,7 @@
+/* Membuat tombol aksi memiliki ukuran yang sama */
+.btn-action {
+    width: 100%; /* Membuat tombol memenuhi div container */
+    text-align: center; /* Memastikan teks di tengah */
+    min-height: 40px; /* Memberikan tinggi minimum agar tombol konsisten */
+    padding: 5px 0; /* Tambahkan padding vertikal untuk tampilan lebih proporsional */
+}

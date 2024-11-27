@@ -38,7 +38,7 @@
                         <div class="d-flex flex-column">
                             <!-- Tombol Edit -->
                             <a href="{{ route('akun.edit', $item->id_akun) }}"
-                                class="btn btn-warning btn-sm mb-2" style="width: 70%;"
+                                class="btn btn-warning btn-sm mb-1" style="width: 60%;"
                                 role="button">Edit</a>
 
                             <!-- Tombol Hapus -->
@@ -47,7 +47,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="btn btn-danger btn-sm" style="width: 70%;"
+                                    class="btn btn-danger btn-sm" style="width: 60%;"
                                     onclick="return confirm('Apakah Anda yakin ingin menghapus akun ini?')">Hapus</button>
                             </form>
                         </div>

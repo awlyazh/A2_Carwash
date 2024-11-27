@@ -39,7 +39,7 @@
                     <td>
                         <div class="d-flex flex-column">
                             <!-- Tombol Edit -->
-                            <a href="{{ url('pelanggan/edit/'. $item->id_pelanggan) }}" class="btn btn-warning btn-sm mb-2" style="width: 100%;">Edit</a>
+                            <a href="{{ url('pelanggan/edit/'. $item->id_pelanggan) }}" class="btn btn-warning btn-sm mb-1" style="width: 100%;">Edit</a>
 
                             <!-- Tombol Hapus -->
                             <form action="{{ url('pelanggan/destroy', ['pengguna' => $item->id_pelanggan]) }}" method="POST" style="display:inline;">

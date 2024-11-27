@@ -26,17 +26,17 @@
             </thead>
             <tbody>
                 @foreach ($harga as $index => $item)
-                <tr class="text-center"> <!-- Tambahkan <tr> di sini -->
+                <tr> <!-- Tambahkan <tr> di sini -->
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->jenis_mobil }}</td>
                     <td>Rp {{ number_format($item->harga, 3, ',', '.') }}</td> <!-- Format harga -->
                     <td>
-                        <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('harga.destroy', $item->id_harga) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
-                        </form>
+                            <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm mb-1" style="width:36%">Edit</a>
+                            <form action="{{ route('harga.destroy', $item->id_harga) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                            </form>
                     </td>
                 </tr>
                 @endforeach

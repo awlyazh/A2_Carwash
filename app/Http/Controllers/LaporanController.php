@@ -11,9 +11,17 @@ class LaporanController extends Controller
     {
         return view('laporan.index');
     }
+
     public function cetak($tanggal_awal, $tanggal_akhir)
     {
-        $cetak = Transaksi::all()->whereBetween('tanggal_transaksi', [$tanggal_awal, $tanggal_akhir]);
+        // Ambil data transaksi dengan mobil dan harga terkait
+        $cetak = Transaksi::with(['pelanggan', 'mobil.harga'])
+            ->whereBetween('tanggal_transaksi', [$tanggal_awal, $tanggal_akhir])
+            ->get();
+
+        dd($cetak);
+
+        // Kirim data ke view
         return view('laporan.cetak', compact('cetak'));
     }
 }
