@@ -70,8 +70,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 // Route untuk laporan (akses hanya admin)
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/laporan', [LaporanController::class, 'index']);
-    Route::get('/laporan/cetak/{tanggal_awal}/{tanggal_akhir}', [LaporanController::class, 'cetak']);
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/cetak/{tanggal_awal}/{tanggal_akhir}', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+    Route::get('/laporan/download/{tanggal_awal}/{tanggal_akhir}', [LaporanController::class, 'download'])->name('laporan.download');
 });
 
 // Route untuk karyawan (akses admin saja)

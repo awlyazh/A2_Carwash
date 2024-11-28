@@ -121,7 +121,6 @@
                 <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
                     <option value="">Pilih Status</option>
                     <option value="selesai">Selesai</option>
-                    <option value="dibatalkan">Dibatalkan</option>
                 </select>
                 @error('status')
                 <div class="invalid-feedback">{{ $message }}</div>

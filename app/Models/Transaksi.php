@@ -40,4 +40,10 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
     }
+    // Mobil.php
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class, 'no_plat_mobil', 'no_plat_mobil');
+    }
+
 }
