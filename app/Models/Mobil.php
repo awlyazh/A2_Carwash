@@ -29,5 +29,9 @@ class Mobil extends Model
 {
     return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
 }
+public function transaksi()
+{
+    return $this->hasMany(Transaksi::class, 'no_plat_mobil', 'no_plat_mobil');
+}
 
 }

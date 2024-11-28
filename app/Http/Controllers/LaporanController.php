@@ -3,25 +3,43 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Transaksi;
+use App\Models\Transaksi; // Model Transaksi
+use Barryvdh\DomPDF\Facade\Pdf; // DomPDF facade
 
 class LaporanController extends Controller
 {
+    /**
+     * Menampilkan halaman index laporan.
+     */
     public function index()
     {
         return view('laporan.index');
     }
 
+    /**
+     * Menampilkan halaman cetak laporan transaksi.
+     */
     public function cetak($tanggal_awal, $tanggal_akhir)
     {
-        // Ambil data transaksi dengan mobil dan harga terkait
-        $cetak = Transaksi::with(['pelanggan', 'mobil.harga'])
+        $posts = Transaksi::with(['pelanggan', 'mobil.harga'])
             ->whereBetween('tanggal_transaksi', [$tanggal_awal, $tanggal_akhir])
             ->get();
 
-        dd($cetak);
+        return view('laporan.cetak', compact('posts', 'tanggal_awal', 'tanggal_akhir'));
+    }
 
-        // Kirim data ke view
-        return view('laporan.cetak', compact('cetak'));
+    /**
+     * Mengunduh laporan transaksi dalam format PDF.
+     */
+    public function download($tanggal_awal, $tanggal_akhir)
+    {
+        $posts = Transaksi::with(['pelanggan', 'mobil.harga'])
+            ->whereBetween('tanggal_transaksi', [$tanggal_awal, $tanggal_akhir])
+            ->get();
+
+        $pdf = Pdf::loadView('laporan.download', compact('posts', 'tanggal_awal', 'tanggal_akhir'));
+
+        return $pdf->download('laporan-transaksi.pdf');
+        
     }
 }

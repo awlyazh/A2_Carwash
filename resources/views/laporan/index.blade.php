@@ -8,19 +8,38 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="d-flex justify-content-between">
-            <div class="col-6 mb-3">
-                <label for="tanggal_awal" class="form-label">Tanggal Awal</label>
-                <input type="date" class="form-control" id="tanggal_awal" name="tanggal_awal" required>
+        <form method="GET">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tanggal_awal" class="form-label">Tanggal Awal</label>
+                    <input type="date" class="form-control" id="tanggal_awal" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
+                    <input type="date" class="form-control" id="tanggal_akhir" required>
+                </div>
             </div>
-            <div class="col-6 mb-3 px-1">
-                <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
-                <input type="date" class="form-control" id="tanggal_akhir" name="tanggal_akhir" required>
+            <div class="d-flex justify-content-end gap-2">
+                <!-- Tombol Cetak -->
+                <a class="btn btn-primary"
+                   onclick="navigateToCetak()">Cetak</a>
             </div>
-        </div>
-
-        <a target="_blank" onclick="this.href='/laporan/cetak/'+ document.getElementById('tanggal_awal').value + '/'+ document.getElementById('tanggal_akhir').value" href="{{ url('cetak') }}" class="btn btn-primary">Cetak</a>
+        </form>
     </div>
 </div>
+
+<script>
+    function navigateToCetak() {
+        const tanggalAwal = document.getElementById('tanggal_awal').value;
+        const tanggalAkhir = document.getElementById('tanggal_akhir').value;
+
+        if (!tanggalAwal || !tanggalAkhir) {
+            alert('Harap isi tanggal awal dan tanggal akhir.');
+            return;
+        }
+
+        window.location.href = `/laporan/cetak/${tanggalAwal}/${tanggalAkhir}`;
+    }
+</script>
 
 @endsection
