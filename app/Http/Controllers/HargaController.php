@@ -29,7 +29,7 @@ class HargaController extends Controller
         ]);
 
         Harga::create($request->all());
-        return redirect()->route('harga.index')->with('success', 'Harga berhasil ditambahkan!');
+        return redirect()->route('harga.index')->with('success', 'Harga berhasil ditambahkan.');
     }
 
     // Menampilkan form edit harga
@@ -49,7 +49,7 @@ class HargaController extends Controller
 
         $harga = Harga::findOrFail($id);
         $harga->update($request->all());
-        return redirect()->route('harga.index')->with('success', 'Harga berhasil diperbarui!');
+        return redirect()->route('harga.index')->with('success', 'Harga berhasil diperbarui.');
     }
 
     // Menghapus data harga
@@ -57,6 +57,6 @@ class HargaController extends Controller
     {
         $harga = Harga::findOrFail($id);
         $harga->delete();
-        return redirect()->route('harga.index')->with('success', 'Harga berhasil dihapus!');
+        return redirect()->route('harga.index')->with('success', 'Harga berhasil dihapus.');
     }
 }

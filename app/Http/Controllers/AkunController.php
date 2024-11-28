@@ -86,10 +86,8 @@ class AkunController extends Controller
         ]);
 
         // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('akun.index')->with('success', 'Akun berhasil diupdate.');
+        return redirect()->route('akun.index')->with('success', 'Akun berhasil diperbarui.');
     }
-
-
 
     public function destroy($id)
     {

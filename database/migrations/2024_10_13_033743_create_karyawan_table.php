@@ -17,8 +17,6 @@ class CreateKaryawanTable extends Migration
             $table->id('id_karyawan');                     // Primary Key
             $table->string('nama_karyawan', 100);          // Nama karyawan
             $table->string('no_hp', 15);                   // Nomor HP, wajib diisi (tidak nullable)
-            $table->integer('jumlah_mobil_dicuci')->nullable(); // Jumlah mobil dicuci bisa null
-            $table->decimal('jumlah_uang_dihasilkan', 15, 2)->nullable(); // Jumlah uang dihasilkan bisa null
             $table->timestamps();                          // Timestamps
         });
     }

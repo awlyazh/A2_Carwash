@@ -30,7 +30,7 @@
             </div>
 
             {{-- Tombol Submit --}}
-            <button type="submit" class="btn btn-primary">Perbarui</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
             <a href="{{ route('karyawan.index') }}" class="btn btn-secondary">Kembali</a>
         </form>
     </div>

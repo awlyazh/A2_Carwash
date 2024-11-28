@@ -62,26 +62,30 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Nama Pelanggan</th>
                 <th>Plat Mobil</th>
+                <th>Harga</th>
                 <th>Metode Pembayaran</th>
-                <th>Total Pembayaran</th>
-                <th>Tanggal Transaksi</th>
                 <th>Status</th>
+                <th>Tanggal Transaksi</th>
             </tr>
         </thead>
         <tbody>
             @forelse ($cetak as $item)
             <tr>
-                <td>{{ $loop->iteration }}</td> <!-- Nomor urut -->
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $item->pelanggan->nama ?? 'Tidak ada nama' }}</td>
                 <td>{{ $item->no_plat_mobil }}</td>
+                <td>
+                    {{ isset($item->mobil->harga) ? 'Rp' . number_format($item->mobil->harga->harga, 2, ',', '.') : 'Tidak ada harga' }}
+                </td>
                 <td>{{ ucfirst($item->metode_pembayaran) }}</td>
-                <td>{{ number_format($item->total_pembayaran, 2, ',', '.') }}</td>
-                <td>{{ \Carbon\Carbon::parse($item->tanggal_transaksi)->format('d-m-Y') }}</td> <!-- Format tanggal -->
                 <td>{{ ucfirst($item->status) }}</td>
+                <td>{{ \Carbon\Carbon::parse($item->tanggal_transaksi)->format('d-m-Y') }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="6" class="text-center">Tidak ada data transaksi.</td>
+                <td colspan="7" class="text-center">Tidak ada data transaksi.</td>
             </tr>
             @endforelse
         </tbody>

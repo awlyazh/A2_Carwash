@@ -27,7 +27,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-success">Simpan</button>
+            <button type="submit" class="btn btn-primary">Simpan</button>
             <a href="{{ route('akun.index') }}" class="btn btn-secondary">Kembali</a>
         </form>
     </div>

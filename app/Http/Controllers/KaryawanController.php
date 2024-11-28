@@ -26,15 +26,11 @@ class KaryawanController extends Controller
         $request->validate([
             'nama_karyawan' => 'required|string|max:100',
             'no_hp' => 'required|string|max:15|regex:/^[0-9\s]+$/',
-            'jumlah_mobil_dicuci' => 'nullable|integer|min:0',
-            'jumlah_uang_dihasilkan' => 'nullable|numeric|min:0',
         ]);
 
         Karyawan::create([
             'nama_karyawan' => $request->nama_karyawan,
             'no_hp' => $request->no_hp,
-            'jumlah_mobil_dicuci' => $request->jumlah_mobil_dicuci,
-            'jumlah_uang_dihasilkan' => $request->jumlah_uang_dihasilkan,
         ]);
 
         return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil ditambahkan.');
@@ -55,18 +51,14 @@ class KaryawanController extends Controller
         $request->validate([
             'nama_karyawan' => 'required|string|max:100',
             'no_hp' => 'required|string|max:15|regex:/^[0-9\s]+$/',
-            'jumlah_mobil_dicuci' => 'nullable|integer|min:0',
-            'jumlah_uang_dihasilkan' => 'nullable|numeric|min:0',
         ]);
 
         $karyawan->update([
             'nama_karyawan' => $request->nama_karyawan,
             'no_hp' => $request->no_hp,
-            'jumlah_mobil_dicuci' => $request->jumlah_mobil_dicuci,
-            'jumlah_uang_dihasilkan' => $request->jumlah_uang_dihasilkan,
         ]);
 
-        return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diperbarui.');
+        return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil diperbarui.');
     }
 
     // Menghapus data karyawan

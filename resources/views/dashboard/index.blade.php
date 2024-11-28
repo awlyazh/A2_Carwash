@@ -26,13 +26,13 @@
                 </div>
             </div>
 
-            <!-- Pelanggan Baru Minggu Ini -->
+            <!-- Pelanggan Baru Bulan Ini -->
             <div class="col-12 col-md-4">
                 <div class="card card-statistic">
                     <div class="card-body p-0">
                         <div class="d-flex flex-column">
                             <div class='px-3 py-3'>
-                                <h3 class='card-title'>Pelanggan Baru (Minggu ini)</h3>
+                                <h3 class='card-title'>Pelanggan Baru (Bulan Ini)</h3>
                                 <div class="card-right mt-2">
                                     <p>{{ $pelangganBaru }}</p>
                                 </div>
