@@ -29,7 +29,7 @@
                 <tr> <!-- Tambahkan <tr> di sini -->
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $item->jenis_mobil }}</td>
-                    <td>Rp {{ number_format($item->harga, 3, ',', '.') }}</td> <!-- Format harga -->
+                    <td>Rp {{ number_format($item->harga, 2, ',', '.') }}</td> <!-- Format harga -->
                     <td>
                             <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm mb-1" style="width:36%">Edit</a>
                             <form action="{{ route('harga.destroy', $item->id_harga) }}" method="POST">

@@ -9,6 +9,9 @@ use App\Models\Akun;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\FonteeService;
+use Illuminate\Support\Facades\Http;
+
 
 class TransaksiController extends Controller
 {
@@ -161,4 +164,77 @@ class TransaksiController extends Controller
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
+
+    public function selesaiTransaksi($id)
+{
+    $transaksi = Transaksi::find($id);
+    $pelanggan = $transaksi->pelanggan;
+
+    $message = "Halo, {$pelanggan->name}, pencucian mobil Anda telah selesai. Terima kasih telah menggunakan layanan kami!";
+    $fontee = new FonteeController();
+    $response = $fontee->sendMessage($pelanggan->phone, $message);
+
+    return response()->json(['status' => $response]);
+}
+
+public function sendWhatsApp($id)
+    {
+        $transaksi = Transaksi::with('pelanggan')->find($id);
+
+        if (!$transaksi || !$transaksi->pelanggan->no_hp) {
+            return redirect()->back()->with('error', 'Nomor HP pelanggan tidak ditemukan!');
+        }
+
+        $fonteeService = new FonteeService();
+
+        $message = "Halo, {$transaksi->pelanggan->nama}. Transaksi Anda dengan ID {$transaksi->id} telah berhasil.";
+
+        $response = $fonteeService->sendWhatsAppMessage($transaksi->pelanggan->no_hp, $message);
+
+        if (isset($response['status']) && $response['status'] == 'success') {
+            return redirect()->back()->with('success', 'Pesan WhatsApp berhasil dikirim!');
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengirim pesan WhatsApp!');
+    }
+
+    public function sendWhatsAppMessage($id_transaksi)
+    {
+        // Ambil data transaksi dengan relasi pelanggan dan mobil
+        $transaksi = Transaksi::with('pelanggan', 'mobil')->find($id_transaksi);
+    
+        // Pastikan data ada dan nomor pelanggan valid
+        if ($transaksi && $transaksi->pelanggan->no_hp) {
+            $phoneNumber = $transaksi->pelanggan->no_hp;
+            $message = "Halo " . $transaksi->pelanggan->nama . 
+                       ", transaksi Anda untuk mobil " . $transaksi->mobil->nama_mobil . 
+                       " telah selesai. Total harga: Rp " . 
+                       number_format($transaksi->mobil->harga->harga, 0, ',', '.') . 
+                       ". Terima kasih telah menggunakan layanan kami!";
+    
+            // Kirim permintaan ke API Fonte
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('FONTE_API_KEY') // API Key dari Fonte
+            ])->post('https://api.fonte.com/send-message', [
+                'phone' => $phoneNumber, // Nomor pelanggan
+                'message' => $message    // Pesan yang akan dikirim
+            ]);
+    
+            // Cek jika berhasil
+            if ($response->successful()) {
+                return back()->with('success', 'Pesan WhatsApp berhasil terkirim ke pelanggan!');
+            } else {
+                return back()->with('error', 'Gagal mengirim pesan WhatsApp.');
+            }
+        }
+    
+        return back()->with('error', 'Nomor telepon pelanggan tidak tersedia.');
+    }
+
+    public function show($id)
+{
+    $pelanggan = Pelanggan::find($id);
+    return view('pelanggan.detail', compact('pelanggan'));
+}
+
 }

@@ -11,7 +11,12 @@ use App\Http\Controllers\MobilController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\FonteeController;
+use App\Http\Controllers\WhatsAppController;
 
+
+
+Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsApp'])->name('transaksi.sendWhatsApp');
 Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
 
 
@@ -88,3 +93,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Route untuk registrasi
 Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.store');
+
+
+Route::post('/send-whatsapp/{id}', [WhatsAppController::class, 'sendWhatsApp'])->name('send.whatsapp');
+Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsAppMessage'])->name('transaksi.sendWhatsApp');

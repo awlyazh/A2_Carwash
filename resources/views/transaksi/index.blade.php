@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-flex justify-content-between mb-3">
     <h1>Daftar Transaksi</h1>
-    <a href="{{ url( 'transaksi/create') }}" class="btn btn-primary mb-3">Tambah</a>
+    <a href="{{ url('transaksi/create') }}" class="btn btn-primary mb-3">Tambah</a>
 </div>
 
 <!-- Menampilkan pesan sukses jika ada -->
@@ -35,11 +35,11 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $t->pelanggan->nama ?? '-' }}</td>
-                    <td>{{ $t->no_plat_mobil?? '-' }}</td>
+                    <td>{{ $t->no_plat_mobil ?? '-' }}</td>
                     <td>{{ $t->mobil->nama_mobil ?? '-' }}</td>
                     <td>{{ $t->mobil->jenis_mobil ?? '-' }}</td>
                     <td>Rp {{ number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') }}</td>
-                    <td>{{ $t->karyawan->nama_karyawan ?? $t->nama_karyawan }}</td>
+                    <td>{{ $t->karyawan->nama_karyawan ?? '-' }}</td>
                     <td>{{ ucfirst($t->metode_pembayaran) }}</td>
                     <td>
                         <span class="badge bg-{{ $t->status == 'selesai' ? 'success' : 'danger' }}">
@@ -47,11 +47,43 @@
                         </span>
                     </td>
                     <td>
+                        <!-- Tombol Edit -->
                         <a href="{{ route('transaksi.edit', $t->id_transaksi) }}" class="btn btn-warning mb-1" style="width: 100%;">Edit</a>
+                        
+                        <!-- Tombol Kirim WhatsApp -->
+                        @if($t->pelanggan && $t->pelanggan->no_hp)
+                        @php
+                            // Format nomor telepon menjadi internasional
+                            $noHp = ltrim($t->pelanggan->no_hp, '0'); // Hilangkan 0 di depan nomor telepon
+                            $noHpInternational = "62" . $noHp; // Tambahkan kode negara Indonesia
+
+                            // Buat pesan untuk WhatsApp
+                            $pesan = "Halo {$t->pelanggan->nama}, transaksi Anda untuk mobil {$t->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
+                            $pesanTerencode = urlencode($pesan); // Encode pesan untuk URL
+                            $urlWhatsApp = "https://wa.me/{$noHpInternational}?text={$pesanTerencode}"; // URL lengkap dengan pesan ter-encode
+                        @endphp
+
+                        <!-- Tombol Kirim WhatsApp -->
+                        <a href="{{ $urlWhatsApp }}" 
+                        class="btn btn-success mb-1" 
+                        style="width: 100%;" 
+                        target="_blank" 
+                        onclick="console.log('WhatsApp URL:', '{{ $urlWhatsApp }}')">
+                        Kirim WhatsApp
+                        </a>
+                    @else
+                        <!-- Jika nomor telepon tidak tersedia -->
+                        <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Tidak Tersedia</button>
+                    @endif
+
+
+                        <!-- Tombol Hapus -->
                         <form action="{{ route('transaksi.destroy', $t->id_transaksi) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;" onclick="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?')">Hapus</button>
+                            <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;" onclick="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?')">
+                                Hapus
+                            </button>
                         </form>
                     </td>
                 </tr>
