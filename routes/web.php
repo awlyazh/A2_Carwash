@@ -13,7 +13,7 @@ use App\Http\Controllers\HargaController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\FonteeController;
 use App\Http\Controllers\WhatsAppController;
-
+use App\Http\Controllers\SPKController;
 
 
 Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsApp'])->name('transaksi.sendWhatsApp');
@@ -22,7 +22,7 @@ Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store
 
 // Route untuk halaman utama
 Route::get('/', function () {
-    return view('auth.register');
+    return view('auth.login');
 })->name('home');
 
 // Route untuk halaman login
@@ -97,3 +97,11 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 
 Route::post('/send-whatsapp/{id}', [WhatsAppController::class, 'sendWhatsApp'])->name('send.whatsapp');
 Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsAppMessage'])->name('transaksi.sendWhatsApp');
+
+// Route Hitung SPK
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/spk', [SPKController::class, 'index'])->name('spk.index');
+    Route::post('/spk/hitung-ahp', [SPKController::class, 'hitungAHP'])->name('spk.hitungAHP');
+    Route::post('/spk/hitung-saw', [SPKController::class, 'hitungSAW'])->name('spk.hitungSAW');
+    Route::get('/spk/cetak', [SPKController::class, 'cetakSPK'])->name('spk.cetak');
+});

@@ -13,7 +13,9 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        return view('laporan.index');
+        $transaksi = Transaksi::with(['pelanggan', 'mobil', 'karyawan'])->get(); // Memuat pelanggan, mobil, dan karyawan terkait
+
+        return view('laporan.index',  compact('transaksi'));
     }
 
     /**

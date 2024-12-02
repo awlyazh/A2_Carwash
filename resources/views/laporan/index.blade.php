@@ -22,9 +22,49 @@
             <div class="d-flex justify-content-end gap-2">
                 <!-- Tombol Cetak -->
                 <a class="btn btn-primary"
-                   onclick="navigateToCetak()">Cetak</a>
+                    onclick="navigateToCetak()">Cetak</a>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="mb-3 mt-1">Daftar Transaksi</h1>
+        <table class="table table-striped" id="table1">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Pelanggan</th>
+                    <th>Plat Mobil</th>
+                    <th>Nama Mobil</th>
+                    <th>Jenis Mobil</th>
+                    <th>Harga</th>
+                    <th>Nama Karyawan</th>
+                    <th>Metode Pembayaran</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($transaksi as $index => $t)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $t->pelanggan->nama ?? '-' }}</td>
+                    <td>{{ $t->no_plat_mobil ?? '-' }}</td>
+                    <td>{{ $t->mobil->nama_mobil ?? '-' }}</td>
+                    <td>{{ $t->mobil->jenis_mobil ?? '-' }}</td>
+                    <td>Rp {{ number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') }}</td>
+                    <td>{{ $t->karyawan->nama_karyawan ?? '-' }}</td>
+                    <td>{{ ucfirst($t->metode_pembayaran) }}</td>
+                    <td>
+                        <span class="badge bg-{{ $t->status == 'selesai' ? 'success' : 'danger' }}">
+                            {{ ucfirst($t->status) }}
+                        </span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 

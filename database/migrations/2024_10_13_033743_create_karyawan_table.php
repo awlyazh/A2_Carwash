@@ -16,7 +16,9 @@ class CreateKaryawanTable extends Migration
         Schema::create('karyawan', function (Blueprint $table) {
             $table->id('id_karyawan');                     // Primary Key
             $table->string('nama_karyawan', 100);          // Nama karyawan
-            $table->string('no_hp', 15);                   // Nomor HP, wajib diisi (tidak nullable)
+            $table->string('no_hp', 15);                   // Nomor HP
+            $table->integer('jumlah_mobil_dicuci')->default(0); // Jumlah mobil dicuci (default 0)
+            $table->decimal('jumlah_uang_dihasilkan', 10, 2)->default(0.00); // Jumlah uang dihasilkan (default 0.00)
             $table->timestamps();                          // Timestamps
         });
     }

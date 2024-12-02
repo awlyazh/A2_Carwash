@@ -31,11 +31,11 @@
                     <td>{{ $item->jenis_mobil }}</td>
                     <td>Rp {{ number_format($item->harga, 2, ',', '.') }}</td> <!-- Format harga -->
                     <td>
-                            <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm mb-1" style="width:36%">Edit</a>
+                            <a href="{{ route('harga.edit', $item->id_harga) }}" class="btn btn-warning btn-sm mb-1" style="width:60%">Edit</a>
                             <form action="{{ route('harga.destroy', $item->id_harga) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                                <button type="submit" class="btn btn-danger btn-sm" style="width: 60%;" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
                             </form>
                     </td>
                 </tr>
