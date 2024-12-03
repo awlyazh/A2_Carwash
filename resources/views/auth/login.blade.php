@@ -9,15 +9,15 @@
                     <div class="card-body">
                         <div class="text-center mb-4">
                             <h3>Login</h3>
-                            <p>Masukkan email dan password Anda.</p>
+                            <p>Masukkan email atau username dan password Anda.</p>
                         </div>
 
                         <form action="{{ route('login') }}" method="POST">
                             @csrf <!-- Token CSRF untuk keamanan -->
 
-                            <!-- Validasi Email -->
+                            <!-- Input Email atau Username -->
                             <div class="form-group position-relative has-icon-left">
-                                <label for="login">Email</label>
+                                <label for="login">Email atau Username</label>
                                 <div class="position-relative">
                                     <input type="text" class="form-control" id="login" name="login" value="{{ old('login') }}"
                                         required minlength="5" maxlength="50"
@@ -32,11 +32,9 @@
                                 @enderror
                             </div>
 
-                            <!-- Validasi Password -->
+                            <!-- Input Password -->
                             <div class="form-group position-relative has-icon-left">
-                                <div class="clearfix">
-                                    <label for="password">Password</label>
-                                </div>
+                                <label for="password">Password</label>
                                 <div class="position-relative">
                                     <input type="password" class="form-control" id="password" name="password"
                                         required minlength="8" maxlength="255"
@@ -50,14 +48,17 @@
                                 @enderror
                             </div>
 
+                            <!-- Error Global untuk kombinasi login/password -->
+                            @if ($errors->has('login') || $errors->has('password'))
+                                <div class="alert alert-danger mt-3">
+                                    <p>Email/Username atau password salah.</p>
+                                </div>
+                            @endif
+
                             <div class="clearfix mt-4">
                                 <button class="btn btn-primary float-right">Login</button>
                             </div>
                         </form>
-
-                        <p class="text-center mt-3">
-                            Belum punya akun? <a href="{{ route('register.form') }}">Register di sini</a>
-                        </p>
 
                     </div>
                 </div>

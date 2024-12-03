@@ -10,7 +10,6 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\FonteeController;
 use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\SPKController;
@@ -89,10 +88,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/karyawan/{id_karyawan}', [KaryawanController::class, 'update'])->name('karyawan.update');
     Route::delete('/karyawan/{id_karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 });
-
-// Route untuk registrasi
-Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register.form');
-Route::post('/register', [RegisterController::class, 'register'])->name('register.store');
 
 
 Route::post('/send-whatsapp/{id}', [WhatsAppController::class, 'sendWhatsApp'])->name('send.whatsapp');
