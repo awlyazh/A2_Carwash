@@ -141,30 +141,6 @@ class TransaksiController extends Controller
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
-
-    // Menghapus transaksi
-    public function destroy($id)
-    {
-        $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
-
-        // Ambil data karyawan terkait
-        $karyawan = Karyawan::findOrFail($transaksi->id_karyawan);
-
-        // Ambil data mobil untuk mengurangi jumlah uang dihasilkan sesuai harga mobil
-        $mobil = Mobil::where('no_plat_mobil', $transaksi->no_plat_mobil)->first();
-        $hargaMobil = $mobil->harga->harga ?? 0;
-
-        // Kurangi jumlah mobil dicuci dan jumlah uang dihasilkan
-        $karyawan->jumlah_mobil_dicuci = max(($karyawan->jumlah_mobil_dicuci ?? 0) - 1, 0);
-        $karyawan->jumlah_uang_dihasilkan = max(($karyawan->jumlah_uang_dihasilkan ?? 0) - $hargaMobil, 0);
-
-        $karyawan->save(); // Simpan perubahan pada tabel karyawan
-
-        $transaksi->delete(); // Hapus data transaksi
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
-    }
-
     public function selesaiTransaksi($id)
     {
         $transaksi = Transaksi::find($id);
