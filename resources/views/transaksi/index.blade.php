@@ -60,17 +60,14 @@
                         // Buat pesan untuk WhatsApp
                         $pesan = "Halo {$t->pelanggan->nama}, transaksi Anda untuk mobil {$t->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
                         $pesanTerencode = urlencode($pesan); // Encode pesan untuk URL
-                        $urlWhatsApp = "https://wa.me/{$noHpInternational}?text={$pesanTerencode}"; // URL lengkap dengan pesan ter-encode
                         @endphp
 
-                        <!-- Tombol Kirim WhatsApp -->
-                        <a href="{{ $urlWhatsApp }}"
-                            class="btn btn-success mb-1"
-                            style="width: 100%;"
-                            target="_blank"
-                            onclick="console.log('WhatsApp URL:', '{{ $urlWhatsApp }}')">
-                            WhatsApp
-                        </a>
+                        <!-- Form Kirim WhatsApp -->
+                        <form action="{{ route('transaksi.kirimWhatsapp', $t->id_transaksi) }}" method="POST" style="width: 100%;">
+                            @csrf
+                            <button type="submit" class="btn btn-success mb-1" style="width: 100%;">Kirim WhatsApp</button>
+                        </form>
+
                         @else
                         <!-- Jika nomor telepon tidak tersedia -->
                         <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Tidak Tersedia</button>

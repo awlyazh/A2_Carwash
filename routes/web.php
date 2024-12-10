@@ -10,8 +10,6 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
-use App\Http\Controllers\FonteeController;
-use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\SPKController;
 
 
@@ -88,9 +86,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/karyawan/{id_karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 });
 
-
-Route::post('/send-whatsapp/{id}', [WhatsAppController::class, 'sendWhatsApp'])->name('send.whatsapp');
-Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsAppMessage'])->name('transaksi.sendWhatsApp');
+Route::post('/transaksi/{id}/kirimWhatsapp', [TransaksiController::class, 'kirimWhatsapp'])->name('transaksi.kirimWhatsapp');
 
 // Route Hitung SPK
 Route::middleware(['auth', 'role:admin'])->group(function () {
