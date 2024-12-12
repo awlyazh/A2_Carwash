@@ -51,25 +51,23 @@
                         <a href="{{ route('transaksi.edit', $t->id_transaksi) }}" class="btn btn-warning mb-1" style="width: 100%;">Edit</a>
 
                         <!-- Tombol Kirim WhatsApp -->
-                        @if($t->pelanggan && $t->pelanggan->no_hp)
                         @php
-                        // Format nomor telepon menjadi internasional
-                        $noHp = ltrim($t->pelanggan->no_hp, '0'); // Hilangkan 0 di depan nomor telepon
-                        $noHpInternational = "62" . $noHp; // Tambahkan kode negara Indonesia
-
-                        // Buat pesan untuk WhatsApp
-                        $pesan = "Halo {$t->pelanggan->nama}, transaksi Anda untuk mobil {$t->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
-                        $pesanTerencode = urlencode($pesan); // Encode pesan untuk URL
+                        // Ambil data dari file JSON
+                        $whatsappSentFile = storage_path('app/whatsapp_sent.json');
+                        $whatsappSent = file_exists($whatsappSentFile) ? json_decode(file_get_contents($whatsappSentFile), true) : [];
                         @endphp
 
-                        <!-- Form Kirim WhatsApp -->
+                        @if(in_array($t->id_transaksi, $whatsappSent))
+                        <!-- Tombol Disabled Jika WhatsApp Sudah Dikirim -->
+                        <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Sudah Dikirim</button>
+                        @elseif($t->pelanggan && $t->pelanggan->no_hp)
+                        <!-- Tombol WhatsApp Aktif Jika Belum Dikirim -->
                         <form action="{{ route('transaksi.kirimWhatsapp', $t->id_transaksi) }}" method="POST" style="width: 100%;">
                             @csrf
-                            <button type="submit" class="btn btn-success mb-1" style="width: 100%;">Kirim WhatsApp</button>
+                            <button type="submit" class="btn btn-success mb-1" style="width: 100%;">WhatsApp</button>
                         </form>
-
                         @else
-                        <!-- Jika nomor telepon tidak tersedia -->
+                        <!-- Jika Nomor WhatsApp Tidak Tersedia -->
                         <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Tidak Tersedia</button>
                         @endif
                     </td>

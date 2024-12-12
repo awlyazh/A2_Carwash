@@ -152,11 +152,18 @@ class TransaksiController extends Controller
 
         return response()->json(['status' => $response]);
     }
-
     public function kirimWhatsapp(Request $request, $id)
     {
         // Ambil data transaksi berdasarkan ID
         $transaksi = Transaksi::with(['pelanggan', 'mobil'])->findOrFail($id);
+
+        // Ambil data dari file JSON
+        $whatsappSent = $this->getWhatsappSentData();
+
+        // Periksa apakah transaksi sudah pernah dikirimi WhatsApp
+        if (in_array($id, $whatsappSent)) {
+            return redirect()->route('transaksi.index')->with('error', 'Pesan WhatsApp sudah pernah dikirim untuk transaksi ini.');
+        }
 
         if ($transaksi->pelanggan && $transaksi->pelanggan->no_hp) {
             $noHp = ltrim($transaksi->pelanggan->no_hp, '0'); // Hilangkan angka 0 di depan
@@ -165,19 +172,22 @@ class TransaksiController extends Controller
             // Pesan yang akan dikirim
             $pesan = "Halo {$transaksi->pelanggan->nama}, transaksi Anda untuk mobil {$transaksi->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($transaksi->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
 
-            // api
+            // API Fonnte
             $url = 'https://api.fonnte.com/send';
 
-            // Kirim permintaan ke API Fonnte
-        $response = Http::withHeaders([
-            'Authorization' => 'v4hetJcq3K2cmLHngnA1', // Ganti dengan API Key Fonnte Anda
-        ])->post($url, [
-            'target' => $noHp,
-            'message' => $pesan,
-            'type' => 'text', // Jenis pesan (text/image dll)
-        ]);
+            $response = Http::withHeaders([
+                'Authorization' => 'sUYXMzdrRmCmQ8fAVgb4', // Ganti dengan API Key Fonnte Anda
+            ])->post($url, [
+                'target' => $noHpInternational,
+                'message' => $pesan,
+                'type' => 'text', // Jenis pesan (text/image dll)
+            ]);
 
             if ($response->successful()) {
+                // Tambahkan ID transaksi ke file JSON
+                $whatsappSent[] = $id;
+                $this->saveWhatsappSentData($whatsappSent);
+
                 return redirect()->route('transaksi.index')->with('success', 'Pesan WhatsApp berhasil dikirim.');
             } else {
                 return redirect()->route('transaksi.index')->with('error', 'Gagal mengirim pesan WhatsApp.');
@@ -185,6 +195,31 @@ class TransaksiController extends Controller
         }
 
         return redirect()->route('transaksi.index')->with('error', 'Nomor WhatsApp tidak tersedia.');
+    }
+    protected function getWhatsappSentFilePath()
+    {
+        return storage_path('app/whatsapp_sent.json'); // Lokasi file JSON
+    }
+
+    protected function getWhatsappSentData()
+    {
+        $filePath = $this->getWhatsappSentFilePath();
+
+        // Jika file tidak ada, buat file kosong
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, json_encode([]));
+        }
+
+        // Baca dan decode data dari file JSON
+        return json_decode(file_get_contents($filePath), true);
+    }
+
+    protected function saveWhatsappSentData(array $data)
+    {
+        $filePath = $this->getWhatsappSentFilePath();
+
+        // Simpan data ke file JSON
+        file_put_contents($filePath, json_encode($data));
     }
 
     public function show($id)
