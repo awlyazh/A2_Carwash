@@ -60,6 +60,15 @@
                                 <span>SPK</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-item {{ Request::is('laporan-spk') ? 'active' : '' }}">
+                            <a href="{{ url('laporan-spk') }}" class='sidebar-link'>
+                                <i data-feather="clipboard" width="20"></i>
+                                <span>Laporan SPK</span>
+                            </a>
+                        </li>
+
+                        </li>
                         @endif
 
                         <li class="sidebar-title mt-3">Pengaturan</li>

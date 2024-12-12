@@ -91,7 +91,11 @@ Route::post('/transaksi/{id}/kirimWhatsapp', [TransaksiController::class, 'kirim
 // Route Hitung SPK
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/spk', [SPKController::class, 'index'])->name('spk.index');
-    Route::post('/spk/hitung-ahp', [SPKController::class, 'hitungAHP'])->name('spk.hitungAHP');
-    Route::post('/spk/hitung-saw', [SPKController::class, 'hitungSAW'])->name('spk.hitungSAW');
+    Route::post('/spk/hitungAHP', [SPKController::class, 'hitungAHP'])->name('spk.hitungAHP');
+    Route::post('/spk/hitungSAW', [SPKController::class, 'hitungSAW'])->name('spk.hitungSAW');
     Route::get('/spk/cetak', [SPKController::class, 'cetakSPK'])->name('spk.cetak');
+    Route::post('/spk/simpan', [SPKController::class, 'simpanHasil'])->name('spk.simpan');
+    Route::get('/spk/lihat', [SPKController::class, 'lihatPDF'])->name('spk.lihat');
+    Route::delete('/spk/hapus', [SPKController::class, 'hapusSPK'])->name('spk.hapus');
+    Route::get('/laporan-spk', [SPKController::class, 'laporanSPK'])->name('spk.laporan');
 });
