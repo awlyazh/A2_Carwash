@@ -52,24 +52,27 @@
 
                         <!-- Tombol Kirim WhatsApp -->
                         @php
-                        // Ambil data dari file JSON
                         $whatsappSentFile = storage_path('app/whatsapp_sent.json');
                         $whatsappSent = file_exists($whatsappSentFile) ? json_decode(file_get_contents($whatsappSentFile), true) : [];
                         @endphp
 
                         @if(in_array($t->id_transaksi, $whatsappSent))
-                        <!-- Tombol Disabled Jika WhatsApp Sudah Dikirim -->
                         <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Sudah Dikirim</button>
                         @elseif($t->pelanggan && $t->pelanggan->no_hp)
-                        <!-- Tombol WhatsApp Aktif Jika Belum Dikirim -->
                         <form action="{{ route('transaksi.kirimWhatsapp', $t->id_transaksi) }}" method="POST" style="width: 100%;">
                             @csrf
                             <button type="submit" class="btn btn-success mb-1" style="width: 100%;">WhatsApp</button>
                         </form>
                         @else
-                        <!-- Jika Nomor WhatsApp Tidak Tersedia -->
                         <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Tidak Tersedia</button>
                         @endif
+
+                        <!-- Tombol Hapus -->
+                        <form action="{{ route('transaksi.destroy', $t->id_transaksi) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');" style="width: 100%;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" style="width: 100%;">Hapus</button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

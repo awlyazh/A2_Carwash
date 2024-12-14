@@ -68,7 +68,6 @@
                             </a>
                         </li>
 
-                        </li>
                         @endif
 
                         <li class="sidebar-title mt-3">Pengaturan</li>
