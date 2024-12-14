@@ -4,6 +4,7 @@
 <div class="page-title mb-3">
     <h3>Tambah Transaksi</h3>
 </div>
+
 @if ($errors->any())
 <div class="alert alert-danger">
     <ul>
@@ -13,6 +14,7 @@
     </ul>
 </div>
 @endif
+
 <div class="card">
     <div class="card-body">
         <form action="{{ route('transaksi.store') }}" method="POST">
@@ -58,23 +60,14 @@
                 <input type="number" class="form-control" id="harga_mobil" name="harga_mobil" readonly>
             </div>
 
-            {{-- Input Tanggal Transaksi --}}
-            <div class="mb-3">
-                <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
-                <input type="date" class="form-control @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" name="tanggal_transaksi" required>
-                @error('tanggal_transaksi')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
             {{-- Pilih Nama Karyawan --}}
             <div class="mb-3">
                 <label for="nama_karyawan" class="form-label">Pilih Karyawan</label>
                 <select class="form-control @error('nama_karyawan') is-invalid @enderror" id="nama_karyawan" name="nama_karyawan" required>
                     <option value="">Pilih Nama Karyawan</option>
                     @foreach ($karyawan as $k)
-                    <option value="{{ $k->nama_karyawan }}"
-                        data-karyawan-id="{{ $k->id_karyawan }}"
+                    <option value="{{ $k->id_karyawan }}"
+                        data-nama-karyawan="{{ $k->nama_karyawan }}"
                         data-mobil-dicuci="{{ $k->jumlah_mobil_dicuci ?? 0 }}"
                         data-uang-dihasilkan="{{ $k->jumlah_uang_dihasilkan ?? 0 }}">
                         {{ $k->nama_karyawan }}
@@ -105,7 +98,7 @@
             <div class="mb-3">
                 <label for="metode_pembayaran" class="form-label">Metode Pembayaran</label>
                 <select class="form-control @error('metode_pembayaran') is-invalid @enderror" id="metode_pembayaran" name="metode_pembayaran" required>
-                    <option value="">Pilih Metode Pembayaran</option>
+                    <option>Pilih Metode Pembayaran</option>
                     <option value="cash">Cash</option>
                     <option value="transfer bank">Transfer Bank</option>
                     <option value="qris">QRIS</option>
@@ -115,16 +108,18 @@
                 @enderror
             </div>
 
-            {{-- Select Status --}}
+            {{-- Input Tanggal Transaksi --}}
             <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
-                    <option value="">Pilih Status</option>
-                    <option value="selesai">Selesai</option>
-                </select>
-                @error('status')
+                <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
+                <input type="date" class="form-control @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" name="tanggal_transaksi" required>
+                @error('tanggal_transaksi')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+
+            {{-- Status --}}
+            <div class="mb-3" style="display: none;">
+                <input type="text" class="form-control" id="status" name="status" value="selesai" readonly>
             </div>
 
             {{-- Input Tersembunyi untuk ID Pelanggan --}}
@@ -162,7 +157,7 @@
         // Update data karyawan ketika nama karyawan dipilih
         namaKaryawanSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            idKaryawanInput.value = selectedOption.getAttribute('data-karyawan-id') || '';
+            idKaryawanInput.value = selectedOption.value || '';
 
             // Ambil nilai jumlah mobil dicuci, jika kosong atau null, set ke 0
             const mobilDicuci = selectedOption.getAttribute('data-mobil-dicuci');

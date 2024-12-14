@@ -12,10 +12,8 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
 use App\Http\Controllers\SPKController;
 
-
 Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsApp'])->name('transaksi.sendWhatsApp');
 Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
-
 
 // Route untuk halaman utama
 Route::get('/', function () {
@@ -36,7 +34,6 @@ Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     // Rute lainnya...
 });
-
 
 Route::resource('harga', HargaController::class);
 

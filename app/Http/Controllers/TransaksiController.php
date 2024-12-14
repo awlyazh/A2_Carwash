@@ -37,9 +37,10 @@ class TransaksiController extends Controller
         return view('transaksi.create', compact('pelanggan', 'mobil', 'akun', 'karyawan'));
     }
 
-    // Menyimpan data transaksi baru
+    // Menyimpan transaksi baru dan kirim WhatsApp
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
             'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
@@ -49,9 +50,9 @@ class TransaksiController extends Controller
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
         ]);
 
-        // Ambil data mobil untuk mendapatkan harga berdasarkan plat nomor
+        // Ambil data mobil dan harga
         $mobil = Mobil::where('no_plat_mobil', $request->no_plat_mobil)->first();
-        $hargaMobil = $mobil->harga->harga; // Ambil harga mobil sesuai dengan relasi harga
+        $hargaMobil = $mobil->harga->harga;
 
         // Simpan transaksi
         $transaksi = Transaksi::create([
@@ -64,15 +65,16 @@ class TransaksiController extends Controller
             'id_akun' => Auth::user()->id_akun,
         ]);
 
-        // Perbarui data jumlah mobil dicuci dan jumlah uang dihasilkan di tabel Karyawan
+        // Update data karyawan
         $karyawan = Karyawan::findOrFail($request->id_karyawan);
+        $karyawan->jumlah_mobil_dicuci = ($karyawan->jumlah_mobil_dicuci ?? 0) + 1;
+        $karyawan->jumlah_uang_dihasilkan = ($karyawan->jumlah_uang_dihasilkan ?? 0) + $hargaMobil;
+        $karyawan->save();
 
-        $karyawan->jumlah_mobil_dicuci = ($karyawan->jumlah_mobil_dicuci ?? 0) + 1; // Tambah 1 mobil
-        $karyawan->jumlah_uang_dihasilkan = ($karyawan->jumlah_uang_dihasilkan ?? 0) + $hargaMobil; // Tambah harga mobil
+        // Kirim WhatsApp setelah transaksi disimpan
+        $this->kirimWhatsapp($transaksi);
 
-        $karyawan->save(); // Simpan perubahan ke database
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan dan pesan WhatsApp telah dikirim.');
     }
 
     // Menampilkan form edit transaksi
@@ -165,90 +167,31 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    public function selesaiTransaksi($id)
+    // Fungsi untuk mengirimkan pesan WhatsApp
+    private function kirimWhatsapp(Transaksi $transaksi)
     {
-        $transaksi = Transaksi::find($id);
-        $pelanggan = $transaksi->pelanggan;
-
-        $message = "Halo, {$pelanggan->name}, pencucian mobil Anda telah selesai. Terima kasih telah menggunakan layanan kami!";
-        $fontee = new FonteeService();
-        $response = $fontee->sendWhatsAppMessage($pelanggan->phone, $message);
-
-        return response()->json(['status' => $response]);
-    }
-    public function kirimWhatsapp(Request $request, $id)
-    {
-        // Ambil data transaksi berdasarkan ID
-        $transaksi = Transaksi::with(['pelanggan', 'mobil'])->findOrFail($id);
-
-        // Ambil data dari file JSON
-        $whatsappSent = $this->getWhatsappSentData();
-
-        // Periksa apakah transaksi sudah pernah dikirimi WhatsApp
-        if (in_array($id, $whatsappSent)) {
-            return redirect()->route('transaksi.index')->with('error', 'Pesan WhatsApp sudah pernah dikirim untuk transaksi ini.');
-        }
-
+        // Pastikan pelanggan memiliki nomor WhatsApp yang valid
         if ($transaksi->pelanggan && $transaksi->pelanggan->no_hp) {
-            $noHp = ltrim($transaksi->pelanggan->no_hp, '0'); // Hilangkan angka 0 di depan
-            $noHpInternational = "62" . $noHp; // Tambahkan kode negara Indonesia
+            $noHp = ltrim($transaksi->pelanggan->no_hp, '0'); // Hapus angka nol di depan nomor
+            $noHpInternational = "62" . $noHp; // Format nomor internasional
 
-            // Pesan yang akan dikirim
+            // Membuat pesan untuk pelanggan
             $pesan = "Halo {$transaksi->pelanggan->nama}, transaksi Anda untuk mobil {$transaksi->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($transaksi->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
 
-            // API Fonnte
+            // Kirim pesan WhatsApp menggunakan API
             $url = 'https://api.fonnte.com/send';
 
             $response = Http::withHeaders([
-                'Authorization' => 'sUYXMzdrRmCmQ8fAVgb4', // Ganti dengan API Key Fonnte Anda
+                'Authorization' => 'sUYXMzdrRmCmQ8fAVgb4', // Ganti dengan API key Anda
             ])->post($url, [
                 'target' => $noHpInternational,
                 'message' => $pesan,
-                'type' => 'text', // Jenis pesan (text/image dll)
+                'type' => 'text',
             ]);
 
-            if ($response->successful()) {
-                // Tambahkan ID transaksi ke file JSON
-                $whatsappSent[] = $id;
-                $this->saveWhatsappSentData($whatsappSent);
-
-                return redirect()->route('transaksi.index')->with('success', 'Pesan WhatsApp berhasil dikirim.');
-            } else {
-                return redirect()->route('transaksi.index')->with('error', 'Gagal mengirim pesan WhatsApp.');
-            }
+            return $response->successful(); // Jika berhasil
         }
 
-        return redirect()->route('transaksi.index')->with('error', 'Nomor WhatsApp tidak tersedia.');
-    }
-    protected function getWhatsappSentFilePath()
-    {
-        return storage_path('app/whatsapp_sent.json'); // Lokasi file JSON
-    }
-
-    protected function getWhatsappSentData()
-    {
-        $filePath = $this->getWhatsappSentFilePath();
-
-        // Jika file tidak ada, buat file kosong
-        if (!file_exists($filePath)) {
-            file_put_contents($filePath, json_encode([]));
-        }
-
-        // Baca dan decode data dari file JSON
-        return json_decode(file_get_contents($filePath), true);
-    }
-
-    protected function saveWhatsappSentData(array $data)
-    {
-        $filePath = $this->getWhatsappSentFilePath();
-
-        // Simpan data ke file JSON
-        file_put_contents($filePath, json_encode($data));
-    }
-
-    public function show($id)
-    {
-        $pelanggan = Pelanggan::find($id);
-        return view('pelanggan.detail', compact('pelanggan'));
+        return false; // Jika tidak ada nomor WhatsApp
     }
 }

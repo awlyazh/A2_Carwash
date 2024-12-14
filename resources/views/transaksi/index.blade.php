@@ -50,23 +50,6 @@
                         <!-- Tombol Edit -->
                         <a href="{{ route('transaksi.edit', $t->id_transaksi) }}" class="btn btn-warning mb-1" style="width: 100%;">Edit</a>
 
-                        <!-- Tombol Kirim WhatsApp -->
-                        @php
-                        $whatsappSentFile = storage_path('app/whatsapp_sent.json');
-                        $whatsappSent = file_exists($whatsappSentFile) ? json_decode(file_get_contents($whatsappSentFile), true) : [];
-                        @endphp
-
-                        @if(in_array($t->id_transaksi, $whatsappSent))
-                        <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Sudah Dikirim</button>
-                        @elseif($t->pelanggan && $t->pelanggan->no_hp)
-                        <form action="{{ route('transaksi.kirimWhatsapp', $t->id_transaksi) }}" method="POST" style="width: 100%;">
-                            @csrf
-                            <button type="submit" class="btn btn-success mb-1" style="width: 100%;">WhatsApp</button>
-                        </form>
-                        @else
-                        <button class="btn btn-secondary mb-1" style="width: 100%;" disabled>WhatsApp Tidak Tersedia</button>
-                        @endif
-
                         <!-- Tombol Hapus -->
                         <form action="{{ route('transaksi.destroy', $t->id_transaksi) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi ini?');" style="width: 100%;">
                             @csrf

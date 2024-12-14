@@ -60,15 +60,6 @@
                 <input type="number" class="form-control" id="harga_mobil" name="harga_mobil" readonly value="{{ $transaksi->mobil->harga->harga ?? '' }}">
             </div>
 
-            {{-- Tanggal Transaksi --}}
-            <div class="mb-3">
-                <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
-                <input type="date" class="form-control @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" name="tanggal_transaksi" required value="{{ $transaksi->tanggal_transaksi }}">
-                @error('tanggal_transaksi')
-                <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
             {{-- Pilih Nama Karyawan --}}
             <div class="mb-3">
                 <label for="nama_karyawan" class="form-label">Pilih Karyawan</label>
@@ -108,7 +99,7 @@
             <div class="mb-3">
                 <label for="metode_pembayaran" class="form-label">Metode Pembayaran</label>
                 <select class="form-control @error('metode_pembayaran') is-invalid @enderror" id="metode_pembayaran" name="metode_pembayaran" required>
-                    <option value="">Pilih Metode Pembayaran</option>
+                    <option>Pilih Metode Pembayaran</option>
                     <option value="cash" {{ $transaksi->metode_pembayaran == 'cash' ? 'selected' : '' }}>Cash</option>
                     <option value="transfer bank" {{ $transaksi->metode_pembayaran == 'transfer bank' ? 'selected' : '' }}>Transfer Bank</option>
                     <option value="qris" {{ $transaksi->metode_pembayaran == 'qris' ? 'selected' : '' }}>QRIS</option>
@@ -118,17 +109,18 @@
                 @enderror
             </div>
 
-            {{-- Status --}}
+            {{-- Tanggal Transaksi --}}
             <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <select class="form-control @error('status') is-invalid @enderror" id="status" name="status" required>
-                    <option value="">Pilih Status</option>
-                    <option value="selesai" {{ $transaksi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                    <option value="dibatalkan" {{ $transaksi->status == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                </select>
-                @error('status')
+                <label for="tanggal_transaksi" class="form-label">Tanggal Transaksi</label>
+                <input type="date" class="form-control @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" name="tanggal_transaksi" required value="{{ $transaksi->tanggal_transaksi }}">
+                @error('tanggal_transaksi')
                 <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+
+            {{-- Status --}}
+            <div class="mb-3" style="display: none;">
+                <input type="text" class="form-control" id="status" name="status" value="selesai" readonly>
             </div>
 
             {{-- Input Tersembunyi untuk ID Pelanggan --}}
