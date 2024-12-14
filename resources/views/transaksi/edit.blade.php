@@ -28,7 +28,7 @@
                     @foreach ($p->mobil as $m)
                     <option value="{{ $m->no_plat_mobil }}"
                         data-nama-mobil="{{ $m->nama_mobil }}"
-                        data-jenis-mobil="{{ $m->jenis_mobil }}"
+                        data-jenis-mobil="{{ $m->harga->jenis_mobil }}"
                         data-harga="{{ $m->harga->harga }}"
                         data-pelanggan-id="{{ $p->id_pelanggan }}"
                         {{ $m->no_plat_mobil == $transaksi->no_plat_mobil ? 'selected' : '' }}>
@@ -51,7 +51,7 @@
             {{-- Jenis Mobil --}}
             <div class="mb-3">
                 <label for="jenis_mobil" class="form-label">Jenis Mobil</label>
-                <input type="text" class="form-control" id="jenis_mobil" name="jenis_mobil" readonly value="{{ $transaksi->mobil->jenis_mobil ?? '' }}">
+                <input type="text" class="form-control" id="jenis_mobil" name="jenis_mobil" readonly value="{{ $transaksi->mobil->harga->jenis_mobil ?? '' }}">
             </div>
 
             {{-- Harga Mobil --}}

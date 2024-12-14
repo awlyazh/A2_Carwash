@@ -29,7 +29,7 @@
                     @foreach ($p->mobil as $m)
                     <option value="{{ $m->no_plat_mobil }}"
                         data-nama-mobil="{{ $m->nama_mobil }}"
-                        data-jenis-mobil="{{ $m->jenis_mobil }}"
+                        data-jenis-mobil="{{ $m->harga->jenis_mobil }}"
                         data-harga="{{ $m->harga->harga }}"
                         data-pelanggan-id="{{ $p->id_pelanggan }}">
                         {{ $m->no_plat_mobil }} - {{ $p->nama }}

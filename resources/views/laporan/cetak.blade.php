@@ -8,11 +8,19 @@
 
 <div class="card">
     <div class="card-body">
-        <p><strong>Tanggal Awal:</strong> {{ $tanggal_awal }}</p>
-        <p><strong>Tanggal Akhir:</strong> {{ $tanggal_akhir }}</p>
+    <div class="mt-3 mb-3 d-flex justify-content-between">
+            <div class="d-flex justify-content-start">
+                <p><strong>Tanggal Awal:</strong> {{ $tanggal_awal }}</p>
+                <p><strong> Tanggal Akhir:</strong> {{ $tanggal_akhir }}</p>
+            </div>
+            <a href="{{ url('/laporan/download/' . $tanggal_awal . '/' . $tanggal_akhir) }}"
+                class="btn btn-success">
+                Download PDF
+            </a>
+        </div>
 
         @if($posts->isEmpty())
-            <div class="alert alert-info">Tidak ada data transaksi pada rentang tanggal ini.</div>
+        <div class="alert alert-info">Tidak ada data transaksi pada rentang tanggal ini.</div>
         @else
         <table class="table table-bordered">
             <thead>
@@ -40,12 +48,7 @@
         </table>
         @endif
 
-        <div class="mt-3 d-flex justify-content-end">
-            <a href="{{ url('/laporan/download/' . $tanggal_awal . '/' . $tanggal_akhir) }}" 
-               class="btn btn-success">
-                Download PDF
-            </a>
-        </div>
+
     </div>
 </div>
 

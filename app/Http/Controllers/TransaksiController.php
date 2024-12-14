@@ -7,6 +7,7 @@ use App\Models\Pelanggan;
 use App\Models\Mobil;
 use App\Models\Akun;
 use App\Models\Karyawan;
+use App\Models\Harga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\FonteeService;
@@ -32,7 +33,7 @@ class TransaksiController extends Controller
         $karyawan = Karyawan::all(); // Ambil data karyawan
 
         // Debug data sebelum mengirim ke view
-        // dd(compact('pelanggan', 'mobil', 'akun', 'karyawan'));
+        // dd(compact('pelanggan','harga', 'mobil', 'akun', 'karyawan'));
 
         return view('transaksi.create', compact('pelanggan', 'mobil', 'akun', 'karyawan'));
     }

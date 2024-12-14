@@ -37,7 +37,7 @@
                     <td>{{ $t->pelanggan->nama ?? '-' }}</td>
                     <td>{{ $t->no_plat_mobil ?? '-' }}</td>
                     <td>{{ $t->mobil->nama_mobil ?? '-' }}</td>
-                    <td>{{ $t->mobil->jenis_mobil ?? '-' }}</td>
+                    <td>{{ $t->mobil->harga->jenis_mobil ?? '-' }}</td>
                     <td>Rp {{ number_format($t->mobil->harga->harga ?? 0, 0, ',', '.') }}</td>
                     <td>{{ $t->karyawan->nama_karyawan ?? '-' }}</td>
                     <td>{{ ucfirst($t->metode_pembayaran) }}</td>
