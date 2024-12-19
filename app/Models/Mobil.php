@@ -27,7 +27,7 @@ class Mobil extends Model
 
     public function pelanggan()
 {
-    return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
+    return $this->belongsTo(Pelanggan::class, 'id_pelanggan','id_pelanggan');
 }
 public function transaksi()
 {

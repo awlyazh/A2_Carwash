@@ -183,7 +183,7 @@ class TransaksiController extends Controller
             $url = 'https://api.fonnte.com/send';
 
             $response = Http::withHeaders([
-                'Authorization' => 'sUYXMzdrRmCmQ8fAVgb4', // Ganti dengan API key Anda
+                'Authorization' => 'v4hetJcq3K2cmLHngnA1', // Ganti dengan API key Anda
             ])->post($url, [
                 'target' => $noHpInternational,
                 'message' => $pesan,

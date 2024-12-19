@@ -8,7 +8,7 @@
 
 <div class="card">
     <div class="card-body">
-    <div class="mt-3 mb-3 d-flex justify-content-between">
+        <div class="mt-3 mb-3 d-flex justify-content-between">
             <div class="d-flex justify-content-start">
                 <p><strong>Tanggal Awal:</strong> {{ $tanggal_awal }}</p>
                 <p><strong> Tanggal Akhir:</strong> {{ $tanggal_akhir }}</p>
