@@ -177,13 +177,13 @@ class TransaksiController extends Controller
             $noHpInternational = "62" . $noHp; // Format nomor internasional
 
             // Membuat pesan untuk pelanggan
-            $pesan = "Halo {$transaksi->pelanggan->nama}, transaksi Anda untuk mobil {$transaksi->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($transaksi->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
+            $pesan = "Halo {$transaksi->pelanggan->nama}, Kami ingin memberitahukan bahwa transaksi Anda untuk mobil {$transaksi->mobil->nama_mobil} telah selesai. Total Harga: Rp " . number_format($transaksi->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah mempercayakan layanan kami untuk kebutuhan Anda. Jika ada pertanyaan atau kebutuhan lainnya, jangan ragu untuk menghubungi kami.\n\nSalam hangat,\nTim A2 Carwash";
 
             // Kirim pesan WhatsApp menggunakan API
             $url = 'https://api.fonnte.com/send';
 
             $response = Http::withHeaders([
-                'Authorization' => 'v4hetJcq3K2cmLHngnA1', // Ganti dengan API key Anda
+                'Authorization' => '8aFC299YnrgxaYDuKYSf', // Ganti dengan API key Anda
             ])->post($url, [
                 'target' => $noHpInternational,
                 'message' => $pesan,
