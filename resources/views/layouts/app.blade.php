@@ -53,6 +53,21 @@
                                 <span>Laporan</span>
                             </a>
                         </li>
+
+                        <li class="sidebar-item {{ Request::is('spk') ? 'active' : '' }}">
+                            <a href="{{ url('spk') }}" class='sidebar-link'>
+                                <i data-feather="bar-chart-2" width="20"></i>
+                                <span>SPK</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item {{ Request::is('laporan-spk') ? 'active' : '' }}">
+                            <a href="{{ url('laporan-spk') }}" class='sidebar-link'>
+                                <i data-feather="clipboard" width="20"></i>
+                                <span>Laporan SPK</span>
+                            </a>
+                        </li>
+
                         @endif
 
                         <li class="sidebar-title mt-3">Pengaturan</li>
@@ -105,20 +120,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav d-flex align-items-center navbar-light ml-auto">
                         <li class="dropdown">
-                            <a href="#" data-toggle="dropdown"
+                            <a href="" data-toggle="dropdown"
                                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                                 <div class="avatar mr-1">
                                     <img src="{{ asset('voler/dist/assets/images/avatar/user.png') }}" alt="">
                                 </div>
-                                <div class="d-none d-md-block d-lg-inline-block">Hi, {{ Auth::user()->name }}</div>
+                                <div class="d-none d-md-block d-lg-inline-block">Hi {{ Auth::user()->username }}! Semangat hari ini, ya!</div>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
-                                <a class="dropdown-item active" href="#"><i data-feather="mail"></i> Messages</a>
-                                <a class="dropdown-item" href="#"><i data-feather="settings"></i> Settings</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#"><i data-feather="log-out"></i> Logout</a>
-                            </div>
                         </li>
                     </ul>
                 </div>

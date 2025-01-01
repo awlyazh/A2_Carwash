@@ -12,7 +12,6 @@ class CreateMobilTable extends Migration
             $table->string('no_plat_mobil', 20);
             $table->primary('no_plat_mobil');
             $table->string('nama_mobil', 100); // Nama mobil dengan max length 100
-            $table->string('jenis_mobil', 50);
             $table->unsignedBigInteger('id_pelanggan');
             $table->unsignedBigInteger('id_harga');
             $table->timestamps();

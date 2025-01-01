@@ -12,20 +12,22 @@ class PelangganController extends Controller
     public function index()
     {
         $pelanggan = Pelanggan::join('mobil', 'pelanggan.id_pelanggan', '=', 'mobil.id_pelanggan')
-            ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga')
+            ->leftJoin('harga', 'mobil.id_harga', '=', 'harga.id_harga') // jenis_mobil diambil dari tabel harga
             ->select(
                 'pelanggan.id_pelanggan',
                 'pelanggan.nama',
                 'pelanggan.no_hp',
                 'mobil.no_plat_mobil',
                 'mobil.nama_mobil',
-                'mobil.jenis_mobil',
+                'harga.jenis_mobil', // Ambil jenis_mobil dari tabel harga
                 'harga.harga'
             )
             ->get();
 
         return view('pelanggan.index', compact('pelanggan'));
     }
+
+
 
     public function create()
     {
@@ -78,16 +80,16 @@ class PelangganController extends Controller
 
     public function edit($id)
     {
-        $pelanggan = Pelanggan::findOrFail($id);
-        $mobil = Mobil::all()->unique('nama_mobil'); // Menghapus duplikasi nama mobil
+        $pelanggan = Pelanggan::with('mobil')->findOrFail($id); // Muat data mobil terkait
+        $mobil = Mobil::all()->unique('nama_mobil'); // Ambil nama mobil unik
         $harga = Harga::all();
 
         return view('pelanggan.edit', compact('pelanggan', 'mobil', 'harga'));
     }
 
+
     public function update(Request $request, $id)
     {
-        // Validasi input
         $validated = $request->validate([
             'nama' => 'required|string|max:100',
             'no_hp' => 'required|digits_between:10,15|numeric',
@@ -96,26 +98,36 @@ class PelangganController extends Controller
             'jenis_mobil' => 'required|exists:harga,jenis_mobil',
         ]);
 
-        // Update data pelanggan
         $pelanggan = Pelanggan::findOrFail($id);
         $pelanggan->update([
             'nama' => $validated['nama'],
             'no_hp' => $validated['no_hp'],
         ]);
 
-        // Update data mobil terkait
         $mobil = Mobil::where('id_pelanggan', $pelanggan->id_pelanggan)->first();
+
         if ($mobil) {
+            // Cek apakah nama mobil diubah menjadi add_new
+            if ($validated['nama_mobil'] === 'add_new') {
+                $request->validate([
+                    'nama_mobil_manual' => 'required|string|max:100|unique:mobil,nama_mobil',
+                ]);
+                $namaMobil = $request->input('nama_mobil_manual');
+            } else {
+                $namaMobil = $validated['nama_mobil'];
+            }
+
             $mobil->update([
                 'no_plat_mobil' => $validated['no_plat_mobil'],
-                'nama_mobil' => $validated['nama_mobil'],
-                'jenis_mobil' => $validated['jenis_mobil'],
+                'nama_mobil' => $namaMobil,
                 'id_harga' => Harga::where('jenis_mobil', $validated['jenis_mobil'])->value('id_harga'),
             ]);
         }
 
         return redirect()->route('pelanggan.index')->with('success', 'Pelanggan dan mobil berhasil diperbarui.');
     }
+
+
 
     public function destroy($id)
     {

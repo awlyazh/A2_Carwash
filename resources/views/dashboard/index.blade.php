@@ -48,8 +48,8 @@
 <!-- Tabel Pelanggan Terbaru -->
 <div class="card">
     <div class="card-body">
-        <h4 class="card-title">Pelanggan Terbaru</h4>
-        <table class="table table-striped">
+        <h2 class="mt-2 mb-3">Pelanggan Terbaru</h2>
+        <table class="table table-striped" id="table1">
             <thead>
                 <tr>
                     <th>No</th>

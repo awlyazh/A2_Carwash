@@ -32,11 +32,11 @@
                     <td>{{ $k->no_hp }}</td>
                     <td>
                         <div class="d-grid gap-2">
-                            <a href="{{ route('karyawan.edit', $k->id_karyawan) }}" class="btn btn-warning btn-sm btn-action mb-1" style="width: 40%;">Edit</a>
+                            <a href="{{ route('karyawan.edit', $k->id_karyawan) }}" class="btn btn-warning btn-sm btn-action mb-1" style="width: 60%;">Edit</a>
                             <form action="{{ route('karyawan.destroy', $k->id_karyawan) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm btn-action" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
+                                <button type="submit" class="btn btn-danger btn-sm btn-action" style="width: 60%;" onclick="return confirm('Yakin ingin menghapus?')">Hapus</button>
                             </form>
                         </div>
                     </td>

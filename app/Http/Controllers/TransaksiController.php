@@ -7,6 +7,7 @@ use App\Models\Pelanggan;
 use App\Models\Mobil;
 use App\Models\Akun;
 use App\Models\Karyawan;
+use App\Models\Harga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\FonteeService;
@@ -32,14 +33,15 @@ class TransaksiController extends Controller
         $karyawan = Karyawan::all(); // Ambil data karyawan
 
         // Debug data sebelum mengirim ke view
-        // dd(compact('pelanggan', 'mobil', 'akun', 'karyawan'));
+        // dd(compact('pelanggan','harga', 'mobil', 'akun', 'karyawan'));
 
         return view('transaksi.create', compact('pelanggan', 'mobil', 'akun', 'karyawan'));
     }
 
-    // Menyimpan data transaksi baru
+    // Menyimpan transaksi baru dan kirim WhatsApp
     public function store(Request $request)
     {
+        // Validasi input
         $request->validate([
             'id_pelanggan' => 'required|exists:pelanggan,id_pelanggan',
             'no_plat_mobil' => 'required|exists:mobil,no_plat_mobil',
@@ -49,9 +51,9 @@ class TransaksiController extends Controller
             'id_karyawan' => 'required|exists:karyawan,id_karyawan',
         ]);
 
-        // Ambil data mobil untuk mendapatkan harga berdasarkan plat nomor
+        // Ambil data mobil dan harga
         $mobil = Mobil::where('no_plat_mobil', $request->no_plat_mobil)->first();
-        $hargaMobil = $mobil->harga->harga; // Ambil harga mobil sesuai dengan relasi harga
+        $hargaMobil = $mobil->harga->harga;
 
         // Simpan transaksi
         $transaksi = Transaksi::create([
@@ -64,15 +66,16 @@ class TransaksiController extends Controller
             'id_akun' => Auth::user()->id_akun,
         ]);
 
-        // Perbarui data jumlah mobil dicuci dan jumlah uang dihasilkan di tabel Karyawan
+        // Update data karyawan
         $karyawan = Karyawan::findOrFail($request->id_karyawan);
+        $karyawan->jumlah_mobil_dicuci = ($karyawan->jumlah_mobil_dicuci ?? 0) + 1;
+        $karyawan->jumlah_uang_dihasilkan = ($karyawan->jumlah_uang_dihasilkan ?? 0) + $hargaMobil;
+        $karyawan->save();
 
-        $karyawan->jumlah_mobil_dicuci = ($karyawan->jumlah_mobil_dicuci ?? 0) + 1; // Tambah 1 mobil
-        $karyawan->jumlah_uang_dihasilkan = ($karyawan->jumlah_uang_dihasilkan ?? 0) + $hargaMobil; // Tambah harga mobil
+        // Kirim WhatsApp setelah transaksi disimpan
+        $this->kirimWhatsapp($transaksi);
 
-        $karyawan->save(); // Simpan perubahan ke database
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan dan pesan WhatsApp telah dikirim.');
     }
 
     // Menampilkan form edit transaksi
@@ -142,99 +145,54 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
-    // Menghapus transaksi
     public function destroy($id)
     {
-        $transaksi = Transaksi::findOrFail($id); // Pastikan data transaksi ada
+        // Cari transaksi berdasarkan ID
+        $transaksi = Transaksi::findOrFail($id);
 
         // Ambil data karyawan terkait
         $karyawan = Karyawan::findOrFail($transaksi->id_karyawan);
 
-        // Ambil data mobil untuk mengurangi jumlah uang dihasilkan sesuai harga mobil
+        // Perbarui jumlah mobil dicuci dan jumlah uang dihasilkan
         $mobil = Mobil::where('no_plat_mobil', $transaksi->no_plat_mobil)->first();
         $hargaMobil = $mobil->harga->harga ?? 0;
 
-        // Kurangi jumlah mobil dicuci dan jumlah uang dihasilkan
         $karyawan->jumlah_mobil_dicuci = max(($karyawan->jumlah_mobil_dicuci ?? 0) - 1, 0);
         $karyawan->jumlah_uang_dihasilkan = max(($karyawan->jumlah_uang_dihasilkan ?? 0) - $hargaMobil, 0);
 
-        $karyawan->save(); // Simpan perubahan pada tabel karyawan
+        $karyawan->save();
 
-        $transaksi->delete(); // Hapus data transaksi
+        // Hapus transaksi
+        $transaksi->delete();
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    public function selesaiTransaksi($id)
-{
-    $transaksi = Transaksi::find($id);
-    $pelanggan = $transaksi->pelanggan;
-
-    $message = "Halo, {$pelanggan->name}, pencucian mobil Anda telah selesai. Terima kasih telah menggunakan layanan kami!";
-    $fontee = new FonteeController();
-    $response = $fontee->sendMessage($pelanggan->phone, $message);
-
-    return response()->json(['status' => $response]);
-}
-
-public function sendWhatsApp($id)
+    // Fungsi untuk mengirimkan pesan WhatsApp
+    private function kirimWhatsapp(Transaksi $transaksi)
     {
-        $transaksi = Transaksi::with('pelanggan')->find($id);
+        // Pastikan pelanggan memiliki nomor WhatsApp yang valid
+        if ($transaksi->pelanggan && $transaksi->pelanggan->no_hp) {
+            $noHp = ltrim($transaksi->pelanggan->no_hp, '0'); // Hapus angka nol di depan nomor
+            $noHpInternational = "62" . $noHp; // Format nomor internasional
 
-        if (!$transaksi || !$transaksi->pelanggan->no_hp) {
-            return redirect()->back()->with('error', 'Nomor HP pelanggan tidak ditemukan!');
-        }
+            // Membuat pesan untuk pelanggan
+            $pesan = "Halo {$transaksi->pelanggan->nama}, transaksi Anda untuk mobil {$transaksi->mobil->nama_mobil} telah selesai. Total harga: Rp " . number_format($transaksi->mobil->harga->harga ?? 0, 0, ',', '.') . ". Terima kasih telah menggunakan layanan kami!";
 
-        $fonteeService = new FonteeService();
+            // Kirim pesan WhatsApp menggunakan API
+            $url = 'https://api.fonnte.com/send';
 
-        $message = "Halo, {$transaksi->pelanggan->nama}. Transaksi Anda dengan ID {$transaksi->id} telah berhasil.";
-
-        $response = $fonteeService->sendWhatsAppMessage($transaksi->pelanggan->no_hp, $message);
-
-        if (isset($response['status']) && $response['status'] == 'success') {
-            return redirect()->back()->with('success', 'Pesan WhatsApp berhasil dikirim!');
-        }
-
-        return redirect()->back()->with('error', 'Gagal mengirim pesan WhatsApp!');
-    }
-
-    public function sendWhatsAppMessage($id_transaksi)
-    {
-        // Ambil data transaksi dengan relasi pelanggan dan mobil
-        $transaksi = Transaksi::with('pelanggan', 'mobil')->find($id_transaksi);
-    
-        // Pastikan data ada dan nomor pelanggan valid
-        if ($transaksi && $transaksi->pelanggan->no_hp) {
-            $phoneNumber = $transaksi->pelanggan->no_hp;
-            $message = "Halo " . $transaksi->pelanggan->nama . 
-                       ", transaksi Anda untuk mobil " . $transaksi->mobil->nama_mobil . 
-                       " telah selesai. Total harga: Rp " . 
-                       number_format($transaksi->mobil->harga->harga, 0, ',', '.') . 
-                       ". Terima kasih telah menggunakan layanan kami!";
-    
-            // Kirim permintaan ke API Fonte
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . env('FONTE_API_KEY') // API Key dari Fonte
-            ])->post('https://api.fonte.com/send-message', [
-                'phone' => $phoneNumber, // Nomor pelanggan
-                'message' => $message    // Pesan yang akan dikirim
+                'Authorization' => 'sUYXMzdrRmCmQ8fAVgb4', // Ganti dengan API key Anda
+            ])->post($url, [
+                'target' => $noHpInternational,
+                'message' => $pesan,
+                'type' => 'text',
             ]);
-    
-            // Cek jika berhasil
-            if ($response->successful()) {
-                return back()->with('success', 'Pesan WhatsApp berhasil terkirim ke pelanggan!');
-            } else {
-                return back()->with('error', 'Gagal mengirim pesan WhatsApp.');
-            }
+
+            return $response->successful(); // Jika berhasil
         }
-    
-        return back()->with('error', 'Nomor telepon pelanggan tidak tersedia.');
+
+        return false; // Jika tidak ada nomor WhatsApp
     }
-
-    public function show($id)
-{
-    $pelanggan = Pelanggan::find($id);
-    return view('pelanggan.detail', compact('pelanggan'));
-}
-
 }

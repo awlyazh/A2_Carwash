@@ -32,14 +32,16 @@ class Transaksi extends Model
     // Relasi dengan mobil
     public function mobil()
     {
-        return $this->belongsTo(Mobil::class, 'no_plat_mobil', 'no_plat_mobil');
+    return $this->belongsTo(Mobil::class, 'no_plat_mobil', 'no_plat_mobil');
     }
+
 
     // Relasi dengan karyawan
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
+    return $this->belongsTo(Karyawan::class, 'id_karyawan', 'id_karyawan');
     }
+
     // Mobil.php
     public function transaksi()
     {
@@ -47,3 +49,4 @@ class Transaksi extends Model
     }
 
 }
+    

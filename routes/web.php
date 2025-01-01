@@ -10,19 +10,14 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MobilController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\HargaController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\FonteeController;
-use App\Http\Controllers\WhatsAppController;
-
-
+use App\Http\Controllers\SPKController;
 
 Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsApp'])->name('transaksi.sendWhatsApp');
 Route::post('mobil/store', [MobilController::class, 'store'])->name('mobil.store');
 
-
 // Route untuk halaman utama
 Route::get('/', function () {
-    return view('auth.register');
+    return view('auth.login');
 })->name('home');
 
 // Route untuk halaman login
@@ -40,7 +35,6 @@ Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
     // Rute lainnya...
 });
 
-
 Route::resource('harga', HargaController::class);
 
 // Route untuk transaksi (akses admin dan karyawan)
@@ -50,7 +44,7 @@ Route::middleware(['auth', 'role:admin,karyawan'])->group(function () {
     Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
     Route::get('/transaksi/{transaksi:id_transaksi}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
     Route::put('/transaksi/{transaksi}', [TransaksiController::class, 'update'])->name('transaksi.update');
-    Route::delete('/transaksi/{transaksi}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+    Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
 });
 
 // Route untuk pelanggan (akses admin dan karyawan)
@@ -90,10 +84,16 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/karyawan/{id_karyawan}', [KaryawanController::class, 'destroy'])->name('karyawan.destroy');
 });
 
-// Route untuk registrasi
-Route::get('/register', [RegisterController::class, 'showRegisterForm'])->name('register.form');
-Route::post('/register', [RegisterController::class, 'register'])->name('register.store');
+Route::post('/transaksi/{id}/kirimWhatsapp', [TransaksiController::class, 'kirimWhatsapp'])->name('transaksi.kirimWhatsapp');
 
-
-Route::post('/send-whatsapp/{id}', [WhatsAppController::class, 'sendWhatsApp'])->name('send.whatsapp');
-Route::get('/transaksi/sendWhatsApp/{id}', [TransaksiController::class, 'sendWhatsAppMessage'])->name('transaksi.sendWhatsApp');
+// Route Hitung SPK
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/spk', [SPKController::class, 'index'])->name('spk.index');
+    Route::post('/spk/hitungAHP', [SPKController::class, 'hitungAHP'])->name('spk.hitungAHP');
+    Route::post('/spk/hitungSAW', [SPKController::class, 'hitungSAW'])->name('spk.hitungSAW');
+    Route::get('/spk/cetak', [SPKController::class, 'cetakSPK'])->name('spk.cetak');
+    Route::post('/spk/simpan', [SPKController::class, 'simpanHasil'])->name('spk.simpan');
+    Route::get('/spk/lihat', [SPKController::class, 'lihatPDF'])->name('spk.lihat');
+    Route::delete('/spk/hapus', [SPKController::class, 'hapusSPK'])->name('spk.hapus');
+    Route::get('/laporan-spk', [SPKController::class, 'laporanSPK'])->name('spk.laporan');
+});
